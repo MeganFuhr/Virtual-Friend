@@ -38,7 +38,7 @@ app.set('views','./src/views')
 app.use(flash())
 
 app.use(function(req, res, next) {
-	res.locals.error = req.flash('error');
+	res.locals.duplicate_email_error = req.flash('duplicate_email_error');
 	next();
   });
 
