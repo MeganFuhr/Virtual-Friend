@@ -14,9 +14,9 @@ const PORT = process.env.PORT || 3000
 const app = express()
 
 //routes pages
-const registerRouter = require('./src/routers/register')
+//const registerRouter = require('./src/routers/register')
 const authRouter = require('./src/routers/authRouter')
-const virtaulJRouter = require('./src/routers/virtaulJRouter')
+const virtaulJRouter = require('./src/routers/virtualJRouter')
 
 //morgan monitors web traffic. options are tiny or combined
 app.use(morgan('tiny'))
@@ -34,7 +34,7 @@ require('./src/config/passport.js')(app)
 app.set('view engine', 'ejs')
 app.set('views','./src/views')
 
-app.use('/register', registerRouter)
+//app.use('/register', registerRouter)
 app.use('/auth', authRouter)
 app.use('/virtual-j', virtaulJRouter)
 
