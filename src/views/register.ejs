@@ -5,6 +5,9 @@
     </head>
   <div class="login-box">
     <h2>Register</h2>
+    <% if ( error ) { %>
+      <div class="flash-error"><%= error %></div>
+  <% } %>
     <form id="submit" action="/auth/register" method="POST">
       <div class="user-box">
         <input type="text" name="email" required="">

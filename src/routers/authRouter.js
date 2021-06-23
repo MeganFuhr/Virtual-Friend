@@ -27,7 +27,8 @@ authRouter.route('/register').post((req, res) => {
             console.log(temp)
             if(temp) {
                 console.log("User already exists.")
-                res.redirect('/')
+                req.flash('error', 'User already exists.')
+                res.redirect('/auth/register')
             }
         } catch (error) {
             console.log(error)

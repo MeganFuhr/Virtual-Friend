@@ -7,6 +7,7 @@ const chalk = require('chalk')
 const debug = require('debug')('app')
 const morgan = require('morgan')
 const path = require('path')
+const flash = require('express-flash')
 const session = require('express-session')
 const cookieParser = require('cookie-parser')
 
@@ -25,7 +26,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended:false}))
 app.use(cookieParser())
 app.use(session({
-	secret:process.env.SESSION_SECRET,
+	secret: process.env.SESSION_SECRET,
 	resave: false,
 	saveUninitialized: false
 }))
@@ -34,7 +35,13 @@ require('./src/config/passport.js')(app)
 app.set('view engine', 'ejs')
 app.set('views','./src/views')
 
-//app.use('/register', registerRouter)
+app.use(flash())
+
+app.use(function(req, res, next) {
+	res.locals.error = req.flash('error');
+	next();
+  });
+
 app.use('/auth', authRouter)
 app.use('/virtual-j', virtaulJRouter)
 

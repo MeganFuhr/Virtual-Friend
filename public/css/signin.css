@@ -166,3 +166,6 @@ html {
     }
   }
   
+  .flash-error {
+      color: red;
+  }
