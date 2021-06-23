@@ -2,6 +2,7 @@ const { MongoClient } = require('mongodb')
 const passport = require('passport')
 const { Strategy } = require('passport-local')
 require('dotenv').config()
+const bcrypt = require('bcryptjs')
 const debug = require('debug')('app:localStrategy')
 
 module.exports = function localStrategy() {
@@ -14,21 +15,25 @@ module.exports = function localStrategy() {
 
         (async function validateUser(){
             let client
-            try {
-                client = await MongoClient.connect(mongourl)
-                debug('Connected to the mongo DB')
+            client = await MongoClient.connect(mongourl)
+            debug('Connected to the mongo DB')
 
-                const db = client.db(dbName)
-
-                const user = await db.collection('users').findOne({email})
-                if (user && user.password === password) {
+            const db = client.db(dbName)
+            const user = await db.collection('users').findOne({email})
+            
+            if (user == null){
+                return done(null, false, { message: 'User is not registered.' });
+            } 
+            try {                
+                if (await bcrypt.compare(password, user.password)) {
                     done(null, user)
-                } else {
-                    done(null, false)
+                    res.redirect('/')
                 }
-                
-            } catch (error) {
-                done(error, false)
+                else {
+                    return done(null, false, {message: 'Incorrect username or password.'})
+                }
+            }catch(error){
+                debug(error)
             }
             client.close()
         }())

@@ -8,6 +8,7 @@
     <% if ( duplicate_email_error ) { %>
       <div class="flash-error"><%= duplicate_email_error %></div>
   <% } %>
+  <br>
     <form id="submit" autocomplete="off" action="/auth/register" method="POST">
       <div class="user-box">
         <input type="text" name="email" required="">

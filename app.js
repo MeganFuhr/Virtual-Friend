@@ -39,6 +39,7 @@ app.use(flash())
 
 app.use(function(req, res, next) {
 	res.locals.duplicate_email_error = req.flash('duplicate_email_error');
+	res.locals.login_error = req.flash('login_error');
 	next();
   });
 
