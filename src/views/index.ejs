@@ -1,32 +1,32 @@
 <html>
-  <style>
-      .button:hover {
-        filter: sepia(1) saturate(18.6) hue-rotate(255.6deg) brightness(1.2)
-  }
-  </style>
   <body>
-    <h1>
-      Hi <%= name %>
-    </h1>
-
-    <h1>Login</h1>
-
-    
-        <form action="/auth/signin" method="POST">
-    <div>
-        <label for="email">E-Mail</label>
-        <input type="email" id="email" name="email" required>
+    <head>
+      <link rel="stylesheet" href="/css/signin.css">
+    </head>
+  <div class="login-box">
+    <h2>Login</h2>
+    <form id="submit" action="/auth/signin" method="POST">
+      <div class="user-box">
+        <input type="text" name="email" required="">
+        <label>Email</label>
+      </div>
+      <div class="user-box">
+        <input type="password" name="password" required="">
+        <label>Password</label>
+      </div>
+      <a href="#"  onclick="document.getElementById('submit').submit();">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        Submit
+      </a> 
+    </form>
+        <div class="user-box" style="color: white;">
+          <br>
+          <br>
+      Not signed up? <a href="/auth/register" style="color:#964c89;">Register Here</a>
     </div>
-    <div>
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required>
-    </div>
-    <div>
-      <button type="submit">Login</button>
-    </div>
-    <div>
-    Not signed up? <a href="/auth/register">Register Here</a>
   </div>
-</form>
   </body>
 </html>
