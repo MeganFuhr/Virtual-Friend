@@ -19,7 +19,8 @@ module.exports = function localStrategy() {
             debug('Connected to the mongo DB')
 
             const db = client.db(dbName)
-            const user = await db.collection('users').findOne({email})
+            const user = await db.collection('users').findOne({email : email.toLowerCase()})
+            
             
             if (user == null){
                 return done(null, false, { message: 'User is not registered.' });
