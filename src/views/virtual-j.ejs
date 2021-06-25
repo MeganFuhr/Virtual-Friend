@@ -60,14 +60,8 @@
       socket.on('message-from-server', function(evt) {
           document.body.appendChild(
           document.createTextNode(evt))
-
-          socket.emit('message-from-client', 
-           'Hello from client.'
-          )
       })
-    </script>
 
-    <script>
       //get all action buttons
       var actions = document.querySelectorAll('[id^=action_')
       i=0
@@ -87,11 +81,12 @@
             actions[2].classList.remove('action_visible')
             actions[3].classList.remove('action_visible')
             i++
-            console.log(i)
+            socket.emit('message-from-client', 
+           "I'm spaghetti!"
+          )
 
             break;
           case 2:
-            //play=2
             i=2
             //console.log(actions[1])
             actions[1].classList.add('action_visible')
@@ -99,30 +94,34 @@
             actions[0].classList.remove('action_visible')
             actions[2].classList.remove('action_visible')
             actions[3].classList.remove('action_visible')
-
             i++
+            socket.emit('message-from-client', 
+           "I'm excercise!"
+          )
             break;
           case 3:
-            //exercise=3
             i=3
             actions[2].classList.add('action_visible')
 
             actions[0].classList.remove('action_visible')
             actions[1].classList.remove('action_visible')
             actions[3].classList.remove('action_visible')
-
             i++
+            socket.emit('message-from-client', 
+           "I'm play!"
+          )
             break;
           case 4:
-            //food=4
             i=4
-            //console.log(actions[3])
             actions[3].classList.add('action_visible')
 
             actions[0].classList.remove('action_visible')
             actions[1].classList.remove('action_visible')
             actions[2].classList.remove('action_visible')
             i=0
+            socket.emit('message-from-client', 
+           "I'm sleepy!"
+          )
             break;
         }
       }
