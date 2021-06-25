@@ -1,4 +1,5 @@
 const express = require('express')
+const stats = require('../config/virtual-j-status')
 
 const virtualJRouter = express.Router();
 virtualJRouter.use((req, res, next) => {

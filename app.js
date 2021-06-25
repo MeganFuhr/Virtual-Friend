@@ -10,12 +10,17 @@ const path = require('path')
 const flash = require('express-flash')
 const session = require('express-session')
 const cookieParser = require('cookie-parser')
+const http = require('http')
+const socketio = require('socket.io')
 
 const PORT = process.env.PORT || 3000
 const app = express()
 
+//configuring socket.io
+const server = http.createServer(app)
+const io = socketio(server);
+
 //routes pages
-//const registerRouter = require('./src/routers/register')
 const authRouter = require('./src/routers/authRouter')
 const virtaulJRouter = require('./src/routers/virtualJRouter')
 
@@ -48,10 +53,16 @@ app.use('/virtual-j', virtaulJRouter)
 
 //chalk is just an easy way to color text
 //set debug=* & node app.js will debug all packages. debug=app & node app.js will debug just app
-app.listen(PORT,() =>
+//server.listen is required now instead of app.listen.  server has the websocket attached now and not app
+server.listen(PORT,() =>
 	debug(`I'm listening on port ${chalk.green(PORT)}`)
 )
 
 app.get('/', (req, res) => {
 	res.render('index', {name: "Welcome to Kung Fu J!"})
+})
+
+////////////////////Socket.io///////////////////
+io.on('connection', socket => {
+	console.log('new connection made')
 })
