@@ -56,6 +56,15 @@
   <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io("http://localhost:4000")
+
+      socket.on('message-from-server', function(evt) {
+          document.body.appendChild(
+          document.createTextNode(evt))
+
+          socket.emit('message-from-client', 
+           'Hello from client.'
+          )
+      })
     </script>
 
     <script>

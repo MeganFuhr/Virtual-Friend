@@ -63,6 +63,16 @@ app.get('/', (req, res) => {
 })
 
 ////////////////////Socket.io///////////////////
-io.on('connection', socket => {
+io.on('connection', function(socket) {
 	console.log('new connection made')
+
+	socket.emit(('message-from-server'), 
+		'Hello from server')
+	
+
+	socket.on('message-from-client', function(msg) {
+		console.log(msg)
+	})
 })
+
+
