@@ -80,7 +80,7 @@
         if(document.getElementById('action_food').classList.contains('action_visible')) {
           console.log("i'm feeding J.")
           //tell server you fed J.
-          socket.emit('fed-j', true)
+          socket.emit('fed-j', false)
           document.getElementById('state_hungry').classList.remove('state_visible')
           document.getElementById('state_hungry').classList.add('state_invisible')
         }

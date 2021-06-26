@@ -74,16 +74,23 @@ io.on('connection', function(socket) {
 		console.log(msg)
 	})
 
+	if(jIsHungry){
+		socket.emit('feed-j', true)
+	}
+	
 	//if the client fed J, change variable to false
 	socket.on('fed-j', function(msg) {
-		console.log(`Client fed j: ${msg}`)
+		console.log(`Client fed j and returned: ${msg}`)
 		jIsHungry = msg
+		clearInterval(hungerInterval)
+		console.log("Resetting hungerInterval")
 	})
 
 	//wait for J to get hungry after 5 seconds, and send it to the client.
-	setInterval(function(){
+	hungerInterval = () =>{
+		console.log("running hunger interval inside io.connection. Interval should be 7 seconds.")
 		socket.emit('feed-j', true)
-	}, 5000)
+	}
 })
 
 
@@ -97,9 +104,10 @@ io.on('connection', function(socket) {
 //let's pretend J gets hungry every 4 hours
 var jIsHungry = new Boolean(false)
 
-setInterval(checkIfHungry, 7000)
+var hungerInterval = setInterval(checkIfHungry, 7000)
 
 function checkIfHungry(){
+	console.log("7 seconds passed, J is hungry")
 	jIsHungry = true
 }
 
