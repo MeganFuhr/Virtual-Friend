@@ -74,10 +74,16 @@ io.on('connection', function(socket) {
 		console.log(msg)
 	})
 
-	///emit if J is hungry.  Need to put in code to set back to nothungry if fed (if client emitted feed event)
-	if(jIsHungry) {
-		socket.emit('feed-j', "Time to feed J!")
-	}
+	//if the client fed J, change variable to false
+	socket.on('fed-j', function(msg) {
+		console.log(`Client fed j: ${msg}`)
+		jIsHungry = msg
+	})
+
+	//wait for J to get hungry after 5 seconds, and send it to the client.
+	setInterval(function(){
+		socket.emit('feed-j', true)
+	}, 5000)
 })
 
 
@@ -91,8 +97,6 @@ io.on('connection', function(socket) {
 //let's pretend J gets hungry every 4 hours
 var jIsHungry = new Boolean(false)
 
-//setting interval to 4 hours is 14400000 milliseconds.
-//setting interval to 7 seconds for testing.
 setInterval(checkIfHungry, 7000)
 
 function checkIfHungry(){
