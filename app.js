@@ -23,6 +23,7 @@ const io = socketio(server);
 //routes pages
 const authRouter = require('./src/routers/authRouter')
 const virtaulJRouter = require('./src/routers/virtualJRouter')
+const { emit } = require('process')
 
 //morgan monitors web traffic. options are tiny or combined
 app.use(morgan('tiny'))
@@ -69,10 +70,46 @@ io.on('connection', function(socket) {
 	socket.emit(('message-from-server'), 
 		'Hello from server')
 	
-
 	socket.on('message-from-client', function(msg) {
 		console.log(msg)
 	})
+
+	///emit if J is hungry.  Need to put in code to set back to nothungry if fed (if client emitted feed event)
+	if(jIsHungry) {
+		socket.emit('feed-j', "Time to feed J!")
+	}
 })
 
 
+//the life drain should run regardless of a connection
+//Hunger = 100
+//hunger ticks down 
+//variables for status of J
+//const maxHunger = 100
+//var currentHunger = 100
+
+//let's pretend J gets hungry every 4 hours
+var jIsHungry = new Boolean(false)
+
+//setting interval to 4 hours is 14400000 milliseconds.
+//setting interval to 7 seconds for testing.
+setInterval(checkIfHungry, 7000)
+
+function checkIfHungry(){
+	jIsHungry = true
+}
+
+/* //maybe set interval to ever hour to check.  
+setInterval(feedJ, 1000)
+
+function feedJ () {
+	currentHunger--
+	console.log(currentHunger)
+	if(currentHunger <= 95){
+		console.log("J is hungry!!")
+	}
+	
+	if(currentHunger == 0){
+
+	}
+} */

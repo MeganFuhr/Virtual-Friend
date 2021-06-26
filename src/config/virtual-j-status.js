@@ -9,13 +9,3 @@ Every 2 hours
 
 Lazy:
 Greater than 10 hours but less than 24 */
-
-
-
-
-
-setTimeout(myFunction, 3000)
-
-function myFunction() {
-	console.log("hello")
-}

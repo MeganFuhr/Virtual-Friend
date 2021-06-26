@@ -56,24 +56,34 @@
   <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io("http://localhost:4000")
+      //get all action buttons
+      const actions = document.querySelectorAll('[id^=action_')
+      i=0
+      
+      var food = new Boolean(false)
+      var exercise = new Boolean(false)
+      var play = new Boolean(false)
+      var sleep = new Boolean(false)
 
       socket.on('message-from-server', function(evt) {
           document.body.appendChild(
           document.createTextNode(evt))
       })
 
-      //get all action buttons
-      var actions = document.querySelectorAll('[id^=action_')
-      i=0
+      //receiving event from server.  If this event is fired, J is hungry and the hungry icon should be visible.
+      socket.on('feed-j', function(evt) {
+          document.body.appendChild(
+          document.createTextNode(evt))
+
+          document.getElementById('state_hungry').classList.add('state_visible')
+
+      })
 
       function Toggle_Action() {
 
         switch(i) {
           case 0:
-            //sleep=1
             i=1            
-            //console.log(actions[0])
-            //actions[0].classList.remove('action_invisible')
             
             actions[0].classList.add('action_visible')
 
@@ -88,7 +98,6 @@
             break;
           case 2:
             i=2
-            //console.log(actions[1])
             actions[1].classList.add('action_visible')
 
             actions[0].classList.remove('action_visible')
