@@ -25,6 +25,7 @@ const authRouter = require('./src/routers/authRouter')
 const virtaulJRouter = require('./src/routers/virtualJRouter')
 const { emit } = require('process')
 const { setInterval } = require('timers')
+const { Console } = require('console')
 
 //morgan monitors web traffic. options are tiny or combined
 app.use(morgan('tiny'))
@@ -82,11 +83,16 @@ io.on('connection', function(socket) {
 
 	//if the client fed J, change variable to false
 	socket.on('fed-j', function(msg) {
-		console.log(`Client fed j and returned: ${msg}`)
-		jIsHungry = msg
-		clearInterval(hungerInterval)
-		console.log("Resetting hungerInterval")
-		setInterval(checkIfHungry, 7000)
+		console.log(`${jIsHungry}`)
+		if(jIsHungry) {
+			console.log(`Client fed j and returned: ${msg}`)
+			jIsHungry = msg
+			startHungerInterval()
+			console.log("Resetting hungerInterval")
+		} else {
+			//TODO : Tell client j isn't hungry.
+			console.log("J isn't hungry.")
+		}
 	})
 
 	//need to send update to client that jIsHunger=true again.
@@ -98,36 +104,21 @@ io.on('connection', function(socket) {
 
 })
 
-
-//the life drain should run regardless of a connection
-//Hunger = 100
-//hunger ticks down 
-//variables for status of J
-//const maxHunger = 100
-//var currentHunger = 100
-
 //let's pretend J gets hungry every 4 hours
 var jIsHungry = new Boolean(false)
+var hungerInterval
 
-var hungerInterval = setInterval(checkIfHungry, 7000)
+startHungerInterval()
 
-function checkIfHungry(){
-	console.log("7 seconds passed, J is hungry")
-	jIsHungry = true
+function startHungerInterval() {
+	clearInterval(hungerInterval)
+	hungerInterval = setInterval(checkIfHungry, 7000)
+	console.log("Start new function startHungerInterval")
 }
 
-
-/* //maybe set interval to ever hour to check.  
-setInterval(feedJ, 1000)
-
-function feedJ () {
-	currentHunger--
-	console.log(currentHunger)
-	if(currentHunger <= 95){
-		console.log("J is hungry!!")
-	}
-	
-	if(currentHunger == 0){
-
-	}
-} */
+i = 0
+function checkIfHungry(){
+	console.log(`7 seconds passed, J is hungry: count ${i}`)
+	i++
+	jIsHungry = true
+}
