@@ -24,6 +24,7 @@ const io = socketio(server);
 const authRouter = require('./src/routers/authRouter')
 const virtaulJRouter = require('./src/routers/virtualJRouter')
 const { emit } = require('process')
+const { setInterval } = require('timers')
 
 //morgan monitors web traffic. options are tiny or combined
 app.use(morgan('tiny'))
@@ -74,23 +75,27 @@ io.on('connection', function(socket) {
 		console.log(msg)
 	})
 
+	//set visibility at connection time
 	if(jIsHungry){
 		socket.emit('feed-j', true)
 	}
-	
+
 	//if the client fed J, change variable to false
 	socket.on('fed-j', function(msg) {
 		console.log(`Client fed j and returned: ${msg}`)
 		jIsHungry = msg
 		clearInterval(hungerInterval)
 		console.log("Resetting hungerInterval")
+		setInterval(checkIfHungry, 7000)
 	})
 
-	//wait for J to get hungry after 5 seconds, and send it to the client.
-	hungerInterval = () =>{
-		console.log("running hunger interval inside io.connection. Interval should be 7 seconds.")
-		socket.emit('feed-j', true)
-	}
+	//need to send update to client that jIsHunger=true again.
+ 	setInterval(function() {
+		if(jIsHungry === true) {
+			socket.emit('feed-j', true)
+		}
+	}, 1000) 
+
 })
 
 
@@ -110,6 +115,7 @@ function checkIfHungry(){
 	console.log("7 seconds passed, J is hungry")
 	jIsHungry = true
 }
+
 
 /* //maybe set interval to ever hour to check.  
 setInterval(feedJ, 1000)
