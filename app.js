@@ -12,6 +12,7 @@ const session = require('express-session')
 const cookieParser = require('cookie-parser')
 const http = require('http')
 const socketio = require('socket.io')
+const fetch = require('node-fetch')
 
 const PORT = process.env.PORT || 3000
 const app = express()
@@ -88,6 +89,7 @@ io.on('connection', function(socket) {
 			console.log(`Client fed j and returned: ${msg}`)
 			jIsHungry = msg
 			startHungerInterval()
+			hungerMessageSentOnce = false
 			console.log("Resetting hungerInterval")
 		} else {
 			//TODO : Tell client j isn't hungry.
@@ -99,10 +101,19 @@ io.on('connection', function(socket) {
  	setInterval(function() {
 		if(jIsHungry === true) {
 			socket.emit('feed-j', true)
+			if(hungerMessageSentOnce === false){
+				hungerMessageSentOnce = true			
+				sendDiscordMessage(hungerMessage)
+			}
 		}
-	}, 1000) 
+	}, 10000) 
 
 })
+
+//https://leovoel.github.io/embed-visualizer/
+discordHook = process.env.DISCORD_HOOK
+hungerMessage = "J is hungry.  Please feed him. :pleading_face: [Virtual-j](http://localhost:4000)"
+hungerMessageSentOnce = false
 
 //let's pretend J gets hungry every 4 hours
 var jIsHungry = new Boolean(false)
@@ -110,15 +121,29 @@ var hungerInterval
 
 startHungerInterval()
 
+//interval for hunger
 function startHungerInterval() {
 	clearInterval(hungerInterval)
 	hungerInterval = setInterval(checkIfHungry, 7000)
-	console.log("Start new function startHungerInterval")
 }
 
-i = 0
+//check jIsHungry variable
 function checkIfHungry(){
-	console.log(`7 seconds passed, J is hungry: count ${i}`)
-	i++
 	jIsHungry = true
+}
+
+//send discord message
+function sendDiscordMessage(message) {
+const msg = {
+	"content": message,
+	"name": "ZilloBotTest",
+	"avatar" : "https://raw.githubusercontent.com/MeganFuhr/BingaGifs/main/j5.png"
+	}
+
+	fetch(discordHook + "?wait=true", {
+		"method":"POST", 
+		"headers": {
+			"content-type": "application/json"},
+		"body": JSON.stringify(msg)})
+		.then(res=>res.json()).then(console.log)
 }
