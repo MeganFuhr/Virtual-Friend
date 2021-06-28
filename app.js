@@ -27,6 +27,7 @@ const virtaulJRouter = require('./src/routers/virtualJRouter')
 const { emit } = require('process')
 const { setInterval } = require('timers')
 const { Console } = require('console')
+const { SSL_OP_NO_TICKET } = require('constants')
 
 //morgan monitors web traffic. options are tiny or combined
 app.use(morgan('tiny'))
@@ -94,6 +95,7 @@ io.on('connection', function(socket) {
 		} else {
 			//TODO : Tell client j isn't hungry.
 			console.log("J isn't hungry.")
+			socket.emit('jNotHungry', {message : "J isn't hungry."})
 		}
 	})
 

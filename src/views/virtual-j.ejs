@@ -7,6 +7,13 @@
         margin: auto;
         width: 60%;
         padding: 10px;
+    } 
+    .text_center {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      text-align: center;
+      font-size: 18px;
     }
     .action_invisible {
       opacity: 0.2;
@@ -21,11 +28,54 @@
       opacity: 1.0;
     }
 
-  </style>
-  <link rel="stylesheet" href="/css/signin.css">
-  <body>
-  <div class="center">
+    .server_message_invisible {     
+      visibility: hidden;
+      opacity: 0;
+      font-size: 37.5px;
+      fill: #3d33cd;
+      font-family: Ubuntu;
+      width: 50%;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+      margin-top: 20px;
+      transition: visibility 0s 2s, opacity 2s linear;
+    }
 
+    .server_message_visible{
+      font-size: 37.5px;
+      fill: #3d33cd;
+      font-family: Ubuntu;
+      width: 50%;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+      margin-top: 20px;
+    
+     animation:signup-response 0.5s 1;
+     -webkit-animation:signup-response 0.5s 1;
+     animation-fill-mode: forwards;
+     
+     animation-delay:2s;
+     -webkit-animation-delay:1s; /* Safari and Chrome */
+     -webkit-animation-fill-mode: forwards;
+    } 
+
+    @keyframes signup-response{
+        from {opacity :1;}
+        to {opacity :0;}
+    }
+
+    @-webkit-keyframes signup-response{
+        from {opacity :1;}
+        to {opacity :0;}
+    }
+  </style>
+  <!-- <link rel="stylesheet" href="/css/signin.css"> -->
+  <body>
+
+  </div>
+    <div class="center">
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="926" height="1087" viewBox="0 0 926 1087">
       <defs>
         <style>
@@ -50,28 +100,46 @@
       <image id="state_tired" class="state_invisible" x="384" y="282" width="53" height="59" xlink:href="data:img/png;base64,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"/>
       <image id="state_hungry" class="state_invisible" x="489" y="284" width="60" height="57" xlink:href="data:img/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA5CAYAAABqMUjBAAAGdElEQVRogd1bC5CXUxT/VaSdWZKlyK5iKJFHdieEhBHWpBhLMyoiNFbF7ljv8mhtTTOaNFJKIkVJMysMxXobysojqTx2FGZlh9CWPFpzm3Pz6+733Xu/x38ffjPf7O69v3vuOd/57r3nnnu3HVo/8gBUAsgF8Pb/wB4rOgHYCKABwDctWM9UoDy7SYz9HUC+j9A2AWVKUBGA/gCOBLAPgF8B1ABYCaAKQHUzG6s8+4noqoztC2Cd1JUBaAtgCoB/XIKmyhtzPUr4AwAOzLxtjWB6tgcRHia9c1yCXibyejFoKIBBAK4CMBnAe8aLUB3e0XS2Yl8as/UAjqa6SaTXPS5BFUS+wcFVnZQC+ILarAZwUXJ7rOgO4Gt60ccSmb/Me6l8vLyIPVajw4k8JqIStwDYQe0nZMbWXZ6tDfFsmLG3UvkeQ2+aFK6MqYwaU4tJuBoa7WPKCkIcz95P5Q+aHl4jFSMTKjaOOvkYQHZCeRAZtWSsj2fvMoxldFS/b5XKU1NQsIg+8XUJPZ0rMvRnfAzVVXgYO9OQN19s3U3wWrg90JtkLo8pQ62zdSl6dhHVYYv80j8lgxXOpQ6ujtg2V5bFuJ6dZsibSXVjIUtKHMVc0BPHnwCyPNvYPDvDc4JisGdLdPmjUrAgZYNB80ORB7czeVaFsj2lvK0RVMTxbDFXDJLC7SI8TTwnsh9yyFQx/Vfk2Z5UNyKhZ8eZnbWXsaIqh6Vs8E0i9w0HbzQp2NuoOwHA+wDKqazM07M3h3WoP5mN0W2yYrDI3eDg1QhvkodMm2efpjr1skORQ8QLUjT4YtqMhKEX9d3ZIe+UpJ5lzBHy5iQWGigRmVUWzmXC+dJDnlqy3gwwlj1bHNK2EVSA/pc0eiyqZSGoFHlTLZwrhPNZzD7mkrGlURtfSI0vj6mARgcAf4gs29axj3B2yEuPgidts7EvloiAnTK+4kKv7z4T4c/CjZJMSORZE9UiaKvsl+NAf87KmCst7Xn8jfXshz07OqmxkG2ZDvF+kGReVKhw8h1S7PaA9supvsxT/oI0PcvoITO2Hl9Kob0t/IMATA+Y8GaTgtOlLFuyjrp8BPHVZmGpTHSFAI4DcKbkqdbG+BoioSslCNTzvSwJKjY+DcAZouzjALYRzzR6CtUtog2Les4iXpbE0Q2Wp15m9oyhnUwmPzkUaZDsf1gUVEibCf3yTqJ61c9HUlcnc4DOdqiX8Jrkqbpm0liG+gxHSf5qgwT5W2T9nCcBBCTrqY0aRe3zpY0ONc2cNo93HU+rzcz+ssQ1O7LkVCIIvHc9D8Bw+lsl+fYz2jxF9QNagnFxsDTgkw/ac+vxvV0S/q0a1WSsGf/C+Pxfau3GQsbe4pD18hLD+yoMva8ZdGwS8DZvhpHCCfoSWjW6Ue6aTzvKyei46d0mRZ7H8tFJQlVl1OsBpxNjyOgqWZJaJK4XJVc7lPucDKoI4Qwhjno5h7U0g/lMaZmF92LAMhV2NHs67aXrZMy3CMwh5edbFOIdTr7knPTfQ0LaHEGpW1cSoUkwzxI3M+4k3nVUvoLKC0LaZhubl2uaw9Bs4+pDiYVbSry7A+rfxX87oLwQGXsBeJbkTEzJDi8cbEw8Qy2N+EBtdghHvbwfhfNdQIzNWEjyZjWFsQWUe1Jx79kW7gDPiUzhUJK71sG9jeS+EMMGb5wD4G/pqNa4KmSiC6V7P/DsoIAMed7BvZG4H8bIdDpRTB2scpwO5MinqT/RKDcACqmfhQ7u+cStMQ7fEoEPrVwHYqArCtssk5ANI6m/oKQfox+t1WqInZzUWL7VNteDv4z4JybodyLJcSXXj5IjGs33OYcOxBISEhYCMjhjMThup4RZJG+gg9vRSApeG7UzPkz2uag2gfjDo3Zmgb4KuVOyoza0MfR2vaTd6BNRec5YlHvwo4IzJq6jVFC8/ovvbYZHpMEKD+5AUsa8E5UWsmg7ud4RmEAOCn6L4uW3hOy60ZNPxr6aIWM1utFs7ApMQF5WQUojmG6vl59dLAK70/8WrJI0bCbxrZxyQE4zKx19ad133bpzQd9A3RTC60CBxeYM3PqxgRMDT4Tw+hLH66j3AGrwDIBDqK6XXBrVGcYkZ8dxwZPkZH1ZVNCPTjwj5cSGGVmJNXRhTD/HN4OxGuMNXT6lW/INsvuKfJP30gAj1aOyjIlDuBSgIjA9tPSjrji+Ys2BAfgXwGyyx99tr4gAAAAASUVORK5CYII="/>
       <image id="state_bored" class="state_invisible" x="602" y="284" width="56" height="56" xlink:href="data:img/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAYAAACohjseAAAEsUlEQVRogd2bW4xeUxTHf74pMWU07qSKVlyqSTGJZIS2QkiD9oE0bSiClHhwSRNEGoQHrUQiSlHqgaRISIQicXklSJhR0zJomGqHzpTWTE15UVny35M1J2c+Z59zvvku/2TnzHfO2Wv9176dtdbecxDlw2TOVekEzgRmAEcDHdK2D9gD7AD6gB6gG9gC/F0DTqVgEbAO2A4cyFl2AS8CS4C2MkgV7cGpwArgNmB24tkI8CXwEzAI7NW9A+rJacBx6l3r6aMS9fuB54ANwO6CPHPhHuCXRE99DTwIXAYcESG0HVgA3Ad8lpBpDfPwZBo2L4XERuDyknU8n9CxFbiqRB2peCih9HXg7Brqm6U56XWurYUim/BvOyU2P66shaIJMB/Y7PR/kjJnc2Oa5lYQ/prmTD3wtOMxAJxalIMtFN87offXyTCPFY7Pb0WN3OKE3VI61fxY5HgNRq7YY3jXCbmpgYwLWOj4dcdWXuUqP1AzisVxs+O5Pqu0ua7SGw1sXMATju/CLBX63ARuFgTOe/6P7+2uNS5tIgNnO96PVHtxWC+9N3ncSsOzzsjUVdV/X05pQgM7FEsa/9VpLww0ce8FrJcNw8kHXa73FtSNXnGc5uy42ksLlvc1qWEePbLlfbs3RQ+u0HVTpLCOKs9G6iTrFeAc4CKggpzVPJ+Gl5U8GtGY92WfQqquDHJOB75VnaQck/2n3MYpGWQZZjp7Lsa5Oybo4AgD92dILN2QQc68jAmqQyK47VAdC9DHXJ2eCAEo2r4O+DiFzF2RAfElCb8yFFsTlgNzIrl9oPo2ynhVP96MFBLQlSD1UU45pORh8uZgngxcbFwfq5vbcgr7FFislt6uzFhe3KrhNUcL3js55fyg6/Tww6y9twCxRsMy2TRky+jxIjfaQgYGWw6r1JlIzVHRfgBKw7cKgi2jFe0d4BabVkCwZXfFbWzMaiEDZ+q60wz8NXGzFRC2EwYqyn0in7CUPbkGQNjK+xENzXHOaZPj5LTgYadurGkBA1fKlv0+eAhbVFvry60UfJHmE/uQ5YLmtW3c8FyWfLhLD2Kj+kbCOtkwlgHwhxAs6fuM/p4hrz4WdpjgpAIGG58hbXDGYqoy2xYYP64zBOPQprSBtcBbORRcWOD4SLIsz6F/rZNx5EQv3elemh+pwA78fCdPvkjpV8IoBj5dOO5LkHZOZpu+jYMulIpBtexYFsRm4wy9CpKHteVeFZ2uNTYWJDsZWO34Ls6qb42rtLKBjVtapDM+dJWvrQ2/QrBMXODXm0dQm5zVIGRp49j2n88ceA3rJGMuHJM4PdgIw/V6x8cWpLOKCjxBy7/f7M+aRi8bjzoe5hDEJoQnRLucV59xnswt7vOBz53+bjV86Xgs4XFsqHGq40SXpQ7lhRLOuVaF9dxXTuE/wEslRyHnyS/2Gzy24F1TA3smxCodNfGtu1nn2WxIHR4h61DgXODulLOoo/ou55r3Rbva3KI7tMuUXM32aq70KjL5A/hLpNvl0k1XgqhTK7ZHvz7eT7nEWF2xREP15wJRxJB2u25slEPpaTBiFjrZEn6GogyLtP2/Fdhm6+9qDFuRrXyjONDmXTkA/gUy2b7nvx1TOAAAAABJRU5ErkJggg=="/>
+      <text id="server_message" class="server_message_invisible" x="345" y="622.324">server_mesage</text>
     </svg>
-    
 </div>
   <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io("http://localhost:4000")
+      i=0
       //get all action buttons
       const actions = document.querySelectorAll('[id^=action_')
-      i=0
 
-      socket.on('message-from-server', function(evt) {
-          document.body.appendChild(
-          document.createTextNode(evt))
-      })
+      // socket.on('message-from-server', function(evt) {
+      //     document.body.appendChild(
+      //     document.createTextNode(evt))
+      // })
 
       //receiving event from server.  If this event is fired, J is hungry and the hungry icon should be visible.
       socket.on('feed-j', function(evt) {
           document.body.appendChild(
           document.createTextNode(evt))
-
           document.getElementById('state_hungry').classList.add('state_visible')
       })
+
+      socket.on('jNotHungry', function (evt) {
+        serverMessage(evt)
+        
+      })
+
+      function serverMessage(evt) {
+
+        document.getElementById('server_message').classList.remove('server_message_invisible')
+        document.getElementById('server_message').innerHTML = evt.message
+        document.getElementById('server_message').classList.add('server_message_visible')
+        let serverMessageTimer = setTimeout(() => 
+          {
+            document.getElementById('server_message').classList.remove('server_message_visible')
+            document.getElementById('server_message').classList.add('server_message_invisible')
+            console.log("re-adding class.")
+          }, 2000     
+        )
+      }
 
 
       function Select_Action() {
@@ -98,8 +166,7 @@
             actions[2].classList.remove('action_visible')
             actions[3].classList.remove('action_visible')
             i++
-            socket.emit('message-from-client', 
-           "I'm spaghetti!"
+            socket.emit('message-from-client',   
           )
 
             break;
