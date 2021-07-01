@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "debug": "set DEBUG=* & nodemon app.js",
-    "start:dev": "set DEBUG=app & nodemon app.js"
+    "start:dev": "set DEBUG=app & nodemon app.js",
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
