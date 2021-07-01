@@ -111,7 +111,7 @@ setInterval(function() {
 		if(hungerMessageSentOnce === false){
 			hungerMessageSentOnce = true	
 			//disabled webhook messaging while testing		
-			//sendDiscordMessage(hungerMessage)
+			sendDiscordMessage(hungerMessage)
 		}
 	}
 }, 10000) 
