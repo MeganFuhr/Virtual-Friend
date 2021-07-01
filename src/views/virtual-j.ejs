@@ -105,7 +105,11 @@
 </div>
   <script src="/socket.io/socket.io.js"></script>
     <script>
+      //prod
       const socket = io("https://virtual-j-test.herokuapp.com")
+
+      //testing
+      //const socket = io("http://localhost:4000/")
       i=0
       //get all action buttons
       const actions = document.querySelectorAll('[id^=action_')
@@ -158,8 +162,8 @@
           console.log("i'm feeding J.")
           //tell server you fed J.
           socket.emit('fed-j', false)
-          document.getElementById('state_hungry').classList.remove('state_visible')
-          document.getElementById('state_hungry').classList.add('state_invisible')
+          //document.getElementById('state_hungry').classList.remove('state_visible')
+          //document.getElementById('state_hungry').classList.add('state_invisible')
         }
       }
 
