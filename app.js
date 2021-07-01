@@ -80,7 +80,8 @@ io.on('connection', function(socket) {
 
 	//set visibility at connection time
 	if(jIsHungry){
-		socket.emit('feed-j', true)
+		//changed to io.emit from socket.emit so every connection knows J is hungry
+		io.emit('feed-j', true)
 	}
 
 	//if the client fed J, change variable to false
@@ -88,6 +89,8 @@ io.on('connection', function(socket) {
 		console.log(`${jIsHungry}`)
 		if(jIsHungry) {
 			console.log(`Client fed j and returned: ${msg}`)
+			//need to tell all clients J has been fed by updating the class on f
+			io.emit('update-all-clients-fed','a-client-fed-j')
 			jIsHungry = msg
 			startHungerInterval()
 			hungerMessageSentOnce = false
@@ -99,16 +102,19 @@ io.on('connection', function(socket) {
 		}
 	})
 
-	//need to send update to client that jIsHunger=true again.
- 	setInterval(function() {
-		if(jIsHungry === true) {
-			socket.emit('feed-j', true)
-			if(hungerMessageSentOnce === false){
-				hungerMessageSentOnce = true			
-				sendDiscordMessage(hungerMessage)
-			}
+//need to send update to client that jIsHunger=true again.
+setInterval(function() {
+	if(jIsHungry === true) {
+		//changed from socket.emit to io.emit so all clients know J is hungry.
+		//at the same time
+		io.emit('feed-j', true)
+		if(hungerMessageSentOnce === false){
+			hungerMessageSentOnce = true	
+			//disabled webhook messaging while testing		
+			//sendDiscordMessage(hungerMessage)
 		}
-	}, 10000) 
+	}
+}, 10000) 
 
 })
 
@@ -121,12 +127,14 @@ hungerMessageSentOnce = false
 var jIsHungry = new Boolean(false)
 var hungerInterval
 
+//start hunger interval at start of app.js
 startHungerInterval()
 
 //interval for hunger
+//set to 15 seconds for testing
 function startHungerInterval() {
 	clearInterval(hungerInterval)
-	hungerInterval = setInterval(checkIfHungry, 7000)
+	hungerInterval = setInterval(checkIfHungry, 30000)
 }
 
 //check jIsHungry variable

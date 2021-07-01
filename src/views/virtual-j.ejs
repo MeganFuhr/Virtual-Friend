@@ -122,9 +122,18 @@
           document.getElementById('state_hungry').classList.add('state_visible')
       })
 
+      //if server returns J is not hungry, display a message
       socket.on('jNotHungry', function (evt) {
-        serverMessage(evt)
-        
+        serverMessage(evt)    
+      })
+
+      //receive event from server that a single client has fed J, so we need to tell this client that 
+      //j is no longer hungry
+      socket.on('update-all-clients-fed', function(evt) {
+        //console.log that a client fed J - message from server
+        console.log(evt)
+        document.getElementById('state_hungry').classList.remove('state_visible')
+        document.getElementById('state_hungry').classList.add('state_invisible')
       })
 
       function serverMessage(evt) {
