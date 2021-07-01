@@ -67,6 +67,11 @@ app.get('/', (req, res) => {
 	res.render('index', {name: "Welcome to Kung Fu J!"})
 })
 
+//https://http.cat/
+app.get('*', function(req, res){
+	res.redirect('https://http.cat/404')
+  });
+
 ////////////////////Socket.io///////////////////
 io.on('connection', function(socket) {
 	console.log('new connection made')
