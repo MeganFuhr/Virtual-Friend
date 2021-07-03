@@ -136,7 +136,7 @@ io.on('connection', function(socket) {
 			if(hungerMessageSentOnce === false){
 				hungerMessageSentOnce = true	
 				//disabled webhook messaging while testing		
-				sendDiscordMessage(hungerMessage)
+				//sendDiscordMessage(hungerMessage)
 			}
 		}
 	}, 10000) 
@@ -212,7 +212,7 @@ function checkIfSleepy(){
 		console.log("J is tired.  Please turn off the lights.")
 		jIsSleepy = true
 		io.emit('j-is-sleepy', {message : "J is tired. Please turn off the lights."})
-		sendDiscordMessage(sleepMessage)
+		//sendDiscordMessage(sleepMessage)
 	}
 	else {
 		io.emit('j-is-awake', {message : "J in not tired and should be awake."})
