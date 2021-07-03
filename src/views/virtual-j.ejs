@@ -106,10 +106,10 @@
   <script src="/socket.io/socket.io.js"></script>
     <script>
       //prod
-      const socket = io("https://virtual-j-test.herokuapp.com")
+      //const socket = io("https://virtual-j-test.herokuapp.com")
 
       //testing
-      //const socket = io("http://localhost:4000/")
+      const socket = io("http://localhost:4000/")
       i=0
       //get all action buttons
       const actions = document.querySelectorAll('[id^=action_')
@@ -119,10 +119,9 @@
       //     document.createTextNode(evt))
       // })
 
+      ///////////////////Hunger/////////////////////////////
       //receiving event from server.  If this event is fired, J is hungry and the hungry icon should be visible.
       socket.on('feed-j', function(evt) {
-          document.body.appendChild(
-          document.createTextNode(evt))
           document.getElementById('state_hungry').classList.add('state_visible')
       })
 
@@ -131,17 +130,48 @@
         serverMessage(evt)    
       })
 
+      //if server returns J is not hungry, display a message
+      socket.on('jNotSleepy', function (evt) {
+          serverMessage(evt)    
+      })
+
+      socket.on('jIsAsleep', function(evt) {
+        serverMessage(evt)  
+      })
+
+      ///////////////////Sleep/////////////////////////////
+      //receiving event from server.  If this event is fired, J is tired and the sleep icon should be visible.
+      socket.on('j-is-sleepy', function(evt) {
+        document.getElementById('state_tired').classList.add('state_visible')
+      })
+
+
+
       //receive event from server that a single client has fed J, so we need to tell this client that 
       //j is no longer hungry
       socket.on('update-all-clients-fed', function(evt) {
         //console.log that a client fed J - message from server
-        console.log(evt)
         document.getElementById('state_hungry').classList.remove('state_visible')
         document.getElementById('state_hungry').classList.add('state_invisible')
       })
 
-      function serverMessage(evt) {
+      socket.on('update-all-clients-sleep', function(evt) {
+        //update classes to show J is tired
+        console.log(evt.message + ' - server told all a client put J to sleep')
+        document.getElementById('state_tired').classList.remove('state_visible')
+        document.getElementById('state_tired').classList.add('state_invisible')
+        
+      })
 
+      socket.on('j-is-awake', function(evt) {
+        //update classes to show J is tired
+        console.log(evt.message + ' - server told all a client put J to sleep')
+        document.getElementById('state_tired').classList.remove('state_visible')
+        document.getElementById('state_tired').classList.add('state_invisible')
+        
+      })
+
+      function serverMessage(evt) {
         document.getElementById('server_message').classList.remove('server_message_invisible')
         document.getElementById('server_message').innerHTML = evt.message
         document.getElementById('server_message').classList.add('server_message_visible')
@@ -156,14 +186,16 @@
 
 
       function Select_Action() {
-        console.log("Im selecting!")
         //On feed, tell server you are feeding J
         if(document.getElementById('action_food').classList.contains('action_visible')) {
           console.log("i'm feeding J.")
           //tell server you fed J.
           socket.emit('fed-j', false)
-          //document.getElementById('state_hungry').classList.remove('state_visible')
-          //document.getElementById('state_hungry').classList.add('state_invisible')
+        }
+        if(document.getElementById('action_sleep').classList.contains('action_visible')) {
+          console.log("i'm putting J to sleep.")
+          //tell server you put J to sleep
+          socket.emit('sleep-j', false)
         }
       }
 

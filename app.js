@@ -76,23 +76,27 @@ app.get('*', function(req, res){
 io.on('connection', function(socket) {
 	console.log('new connection made')
 
-	socket.emit(('message-from-server'), 
-		'Hello from server')
-	
-	socket.on('message-from-client', function(msg) {
-		console.log(msg)
-	})
-
+	///////////////////////TELL CLIENTS MESSAGES////////////////////////
 	//set visibility at connection time
 	if(jIsHungry){
 		//changed to io.emit from socket.emit so every connection knows J is hungry
 		io.emit('feed-j', true)
 	}
 
-	//if the client fed J, change variable to false
+	if(jIsSleepy){
+		io.emit('sleep-j', true)
+	}
+	else{
+		io.emit('sleep-j', false)
+	}
+	////////////////////////////////////////////////////////////////////
+
+	///////////////////////////HUNGRY EVENTS////////////////////////////
 	socket.on('fed-j', function(msg) {
-		console.log(`${jIsHungry}`)
-		if(jIsHungry) {
+		if(jIsHungry && jIsAsleep === true) {
+				socket.emit('jIsAsleep', {message : "J is asleep and cannot eat."})
+			}
+		if(jIsHungry && jIsAsleep === false){
 			console.log(`Client fed j and returned: ${msg}`)
 			//need to tell all clients J has been fed by updating the class on f
 			io.emit('update-all-clients-fed','a-client-fed-j')
@@ -107,58 +111,114 @@ io.on('connection', function(socket) {
 		}
 	})
 
-//need to send update to client that jIsHunger=true again.
-setInterval(function() {
-	if(jIsHungry === true) {
-		//changed from socket.emit to io.emit so all clients know J is hungry.
-		//at the same time
-		io.emit('feed-j', true)
-		if(hungerMessageSentOnce === false){
-			hungerMessageSentOnce = true	
-			//disabled webhook messaging while testing		
-			sendDiscordMessage(hungerMessage)
+	///////////////////////////SLEEP EVENTS////////////////////////////
+	//if a client put J to sleep, change variable to false
+	socket.on('sleep-j', function(msg) {
+		if(jIsSleepy === true) {
+			console.log(`Client put J to sleep and returned: ${msg}`)
+			//need to tell all clients J has been fed by updating the class on f
+			io.emit('update-all-clients-sleep', {message :'a-client-sleep-j'})
+			jIsSleepy = msg
+			jIsAsleep = true
+		} else {
+			//TODO : Tell client j isn't hungry.
+			console.log("J isn't sleepy.")
+			socket.emit('jNotSleepy', {message : "J isn't sleepy."})
 		}
-	}
-}, 10000) 
+	})
+
+	//need to send update to client that jIsHunger=true again.
+	setInterval(function() {
+		if(jIsHungry === true) {
+			//changed from socket.emit to io.emit so all clients know J is hungry.
+			//at the same time
+			io.emit('feed-j', true)
+			if(hungerMessageSentOnce === false){
+				hungerMessageSentOnce = true	
+				//disabled webhook messaging while testing		
+				sendDiscordMessage(hungerMessage)
+			}
+		}
+	}, 10000) 
+	////////////////////////////////////////////////////////////////////
 
 })
 
 //https://leovoel.github.io/embed-visualizer/
 discordHook = process.env.DISCORD_HOOK
-hungerMessage = "J is hungry.  Please feed him. :pleading_face: [Virtual-j](http://localhost:4000)"
-hungerMessageSentOnce = false
 
-//let's pretend J gets hungry every 4 hours
+
+//hunger
+hungerMessage = "J is hungry.  Please feed him. :pleading_face: [Virtual-j](https://virtual-j-test.herokuapp.com)"
+hungerMessageSentOnce = false
 var jIsHungry = new Boolean(false)
 var hungerInterval
 
+//sleep
+sleepMessage = "J should be in bed. Please put him down. :sleeping: [Virtual-j](https://virtual-j-test.herokuapp.com)"
+jIsSleepy = new Boolean(false)
+jIsAsleep = new Boolean
+var currentTime = new Date()
+
+//send discord message
+function sendDiscordMessage(message) {
+	const msg = {
+		"content": message,
+		"name": "ZilloBotTest",
+		"avatar" : "https://raw.githubusercontent.com/MeganFuhr/BingaGifs/main/j5.png"
+		}
+	
+		fetch(discordHook + "?wait=true", {
+			"method":"POST", 
+			"headers": {
+				"content-type": "application/json"},
+			"body": JSON.stringify(msg)})
+			.then(res=>res.json()).then(console.log)
+	}
+
+///////////////////////////HUNGER////////////////////////////
 //start hunger interval at start of app.js
 startHungerInterval()
 
-//interval for hunger
-//set to 15 seconds for testing
+//interval for hunger - 4 hours 14400000 milliseconds
 function startHungerInterval() {
 	clearInterval(hungerInterval)
-	hungerInterval = setInterval(checkIfHungry, 30000)
+	hungerInterval = setInterval(checkIfHungry, 8000)
 }
 
 //check jIsHungry variable
 function checkIfHungry(){
-	jIsHungry = true
-}
-
-//send discord message
-function sendDiscordMessage(message) {
-const msg = {
-	"content": message,
-	"name": "ZilloBotTest",
-	"avatar" : "https://raw.githubusercontent.com/MeganFuhr/BingaGifs/main/j5.png"
+	//if J is awake, he can be hungry
+	if (jIsSleepy === false) {
+		jIsHungry = true
 	}
-
-	fetch(discordHook + "?wait=true", {
-		"method":"POST", 
-		"headers": {
-			"content-type": "application/json"},
-		"body": JSON.stringify(msg)})
-		.then(res=>res.json()).then(console.log)
 }
+////////////////////////////////////////////////////////////////////
+
+
+
+///////////////////////////SLEEP EVENTS////////////////////////////
+startSleepInterval()
+
+//check every minute if J is sleepy
+function startSleepInterval() {
+	console.log(currentTime)
+	setInterval(checkIfSleepy, 61000)
+}
+
+//check if J is sleepy
+function checkIfSleepy(){
+	if(currentTime.getHours() >= 23 || currentTime.getHours() < 9){
+		console.log("J is tired.  Please turn off the lights.")
+		jIsSleepy = true
+		io.emit('j-is-sleepy', {message : "J is tired. Please turn off the lights."})
+		sendDiscordMessage(sleepMessage)
+	}
+	else {
+		io.emit('j-is-awake', {message : "J in not tired and should be awake."})
+		jIsSleepy = false
+		jIsAsleep = false
+	}
+}
+////////////////////////////////////////////////////////////////////
+
