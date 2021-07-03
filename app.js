@@ -208,7 +208,7 @@ function startSleepInterval() {
 
 //check if J is sleepy
 function checkIfSleepy(){
-	if(currentTime.getHours() >= 23 || currentTime.getHours() < 9){
+	if(currentTime.getHours() >= 20 || currentTime.getHours() < 9){
 		console.log("J is tired.  Please turn off the lights.")
 		jIsSleepy = true
 		io.emit('j-is-sleepy', {message : "J is tired. Please turn off the lights."})
