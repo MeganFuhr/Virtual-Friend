@@ -160,7 +160,8 @@ sleepMessage = "J should be in bed. Please put him down. :sleeping: [Virtual-j](
 sleepyMessageSentOnce = false
 jIsSleepy = new Boolean(false)
 jIsAsleep = new Boolean
-var currentTime = new Date().getUTCHours()
+var t = new Date()
+var currentTime = t.getUTCHours()
 
 //send discord message
 function sendDiscordMessage(message) {
