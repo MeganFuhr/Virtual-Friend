@@ -106,10 +106,10 @@
   <script src="/socket.io/socket.io.js"></script>
     <script>
       //prod
-      const socket = io("https://virtual-j-test.herokuapp.com")
+      //const socket = io("https://virtual-j-test.herokuapp.com")
 
       //testing
-      //const socket = io("http://localhost:4000/")
+      const socket = io("http://localhost:4000/")
       i=0
       //get all action buttons
       const actions = document.querySelectorAll('[id^=action_')
@@ -171,6 +171,20 @@
         
       })
 
+      socket.on('update-client-j-already-asleep', function(evt) {
+        //update classes to show J is tired
+        console.log(evt.message)
+        document.getElementById('state_tired').classList.remove('state_visible')
+        document.getElementById('state_tired').classList.add('state_invisible')
+        serverMessage(evt)
+        
+      })
+      socket.on('update-client-j-daytime', function(evt) {
+        //update client that J should be awake since it is daytime.
+        serverMessage(evt)
+        
+      })
+
       function serverMessage(evt) {
         document.getElementById('server_message').classList.remove('server_message_invisible')
         document.getElementById('server_message').innerHTML = evt.message
@@ -179,7 +193,6 @@
           {
             document.getElementById('server_message').classList.remove('server_message_visible')
             document.getElementById('server_message').classList.add('server_message_invisible')
-            console.log("re-adding class.")
           }, 2000     
         )
       }
@@ -188,12 +201,12 @@
       function Select_Action() {
         //On feed, tell server you are feeding J
         if(document.getElementById('action_food').classList.contains('action_visible')) {
-          console.log("i'm feeding J.")
+          console.log("Client: Sending server feed command.")
           //tell server you fed J.
           socket.emit('fed-j', false)
         }
         if(document.getElementById('action_sleep').classList.contains('action_visible')) {
-          console.log("i'm putting J to sleep.")
+          console.log("Client: Sending server sleep command.")
           //tell server you put J to sleep
           socket.emit('sleep-j', false)
         }

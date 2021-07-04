@@ -78,7 +78,7 @@ io.on('connection', function(socket) {
 
 	///////////////////////TELL CLIENTS MESSAGES////////////////////////
 	//set visibility at connection time
-	if(jIsHungry){
+	if(jIsHungry === true){
 		//changed to io.emit from socket.emit so every connection knows J is hungry
 		io.emit('feed-j', true)
 	}
@@ -93,13 +93,14 @@ io.on('connection', function(socket) {
 
 	///////////////////////////HUNGRY EVENTS////////////////////////////
 	socket.on('fed-j', function(msg) {
-		if(jIsHungry && jIsAsleep === true) {
-				socket.emit('jIsAsleep', {message : "J is asleep and cannot eat."})
+		if(jIsHungry = true && jIsAsleep === true) {
+				socket.emit('jIsAsleep', {message : "Server: J is asleep and cannot eat."})
+				console.log(`jIsHungry: ${jIsHungry} and jIsAsleep: ${jIsAsleep}`)
 			}
-		if(jIsHungry && jIsAsleep === false){
-			console.log(`Client fed j and returned: ${msg}`)
+		if(jIsHungry = true && jIsAsleep === false){
+			console.log(`jIsHungry: ${jIsHungry} and jIsAsleep: ${jIsAsleep}`)
 			//need to tell all clients J has been fed by updating the class on f
-			io.emit('update-all-clients-fed','a-client-fed-j')
+			io.emit('update-all-clients-fed','Server: a-client-fed-j')
 			jIsHungry = msg
 			startHungerInterval()
 			hungerMessageSentOnce = false
@@ -107,24 +108,30 @@ io.on('connection', function(socket) {
 		} else {
 			//TODO : Tell client j isn't hungry.
 			console.log("J isn't hungry.")
-			socket.emit('jNotHungry', {message : "J isn't hungry."})
+			socket.emit('jNotHungry', {message : "Server: J isn't hungry."})
+			console.log(`jIsHungry: ${jIsHungry}`)
 		}
 	})
 
 	///////////////////////////SLEEP EVENTS////////////////////////////
 	//if a client put J to sleep, change variable to false
 	socket.on('sleep-j', function(msg) {
+		if(jIsAsleep === true){
+			console.log(`J is asleep and can't be put to sleep`)
+			io.emit('update-client-j-already-asleep', {message :'Server: J is already asleep.'})
+			return
+		}
 		if(jIsSleepy === true) {
 			console.log(`Client put J to sleep and returned: ${msg}`)
 			//need to tell all clients J has been fed by updating the class on f
-			io.emit('update-all-clients-sleep', {message :'a-client-sleep-j'})
+			io.emit('update-all-clients-sleep', {message :'Server: a-client-sleep-j'})
 			jIsSleepy = msg
 			jIsAsleep = true
 			sleepyMessageSentOnce = false
 		} else {
 			//TODO : Tell client j isn't hungry.
 			console.log("J isn't sleepy.")
-			socket.emit('jNotSleepy', {message : "J isn't sleepy."})
+			socket.emit('jNotSleepy', {message : "Server: J isn't sleepy."})
 		}
 	})
 
@@ -152,11 +159,11 @@ discordHook = process.env.DISCORD_HOOK
 //hunger
 hungerMessage = "J is hungry.  Please feed him. :pleading_face: [Virtual-j](https://virtual-j-test.herokuapp.com)"
 hungerMessageSentOnce = false
-var jIsHungry = new Boolean(false)
+var jIsHungry = new Boolean(true)
 var hungerInterval
 
 //sleep
-sleepMessage = "J should be in bed. Please put him down. :sleeping: [Virtual-j](https://virtual-j-test.herokuapp.com)"
+sleepMessage = "J should be in bed. Please make him go to sleep. :sleeping: [Virtual-j](https://virtual-j-test.herokuapp.com)"
 sleepyMessageSentOnce = false
 jIsSleepy = new Boolean(false)
 jIsAsleep = new Boolean
@@ -205,22 +212,26 @@ startSleepInterval()
 
 //check every minute if J is sleepy
 function startSleepInterval() {
-	console.log(currentTime)
 	setInterval(checkIfSleepy, 61000)
 }
 
 //check if J is sleepy
-//utc. 1 = 9pm ET, 10
+//utc. 0 = 8pm ET, 10 6am et
 function checkIfSleepy(){
-	if(currentTime.getHours() >= 0 || currentTime.getHours() < 10){
+	if(currentTime >= 0 && currentTime < 10){
 		console.log("J is tired.  Please turn off the lights.")
 		jIsSleepy = true
-		io.emit('j-is-sleepy', {message : "J is tired. Please turn off the lights."})
+		io.emit('j-is-sleepy', {message : "Server: J is tired. Please turn off the lights."})
 		sendDiscordMessage(sleepMessage)
 		sleepyMessageSentOnce = true
 	}
+	if (currentTime >= 10 && currentTime < 20){
+		console.log("J should be awake.")
+		jIsAsleep = false
+		io.emit('update-client-j-daytime', {message : "Server: J should be working!"})
+	}
 	else {
-		io.emit('j-is-awake', {message : "J in not tired and should be awake."})
+		io.emit('j-is-awake', {message : "Server: J in not tired and should be awake."})
 		jIsSleepy = false
 		jIsAsleep = false
 	}
