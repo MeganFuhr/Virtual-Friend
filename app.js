@@ -193,7 +193,7 @@ startHungerInterval()
 //interval for hunger - 4 hours 14400000 milliseconds
 function startHungerInterval() {
 	clearInterval(hungerInterval)
-	hungerInterval = setInterval(checkIfHungry, 3600000)
+	hungerInterval = setInterval(checkIfHungry, 7200000)
 }
 
 //check jIsHungry variable
