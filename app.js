@@ -120,6 +120,7 @@ io.on('connection', function(socket) {
 			io.emit('update-all-clients-sleep', {message :'a-client-sleep-j'})
 			jIsSleepy = msg
 			jIsAsleep = true
+			sleepyMessageSentOnce = false
 		} else {
 			//TODO : Tell client j isn't hungry.
 			console.log("J isn't sleepy.")
@@ -136,7 +137,7 @@ io.on('connection', function(socket) {
 			if(hungerMessageSentOnce === false){
 				hungerMessageSentOnce = true	
 				//disabled webhook messaging while testing		
-				//sendDiscordMessage(hungerMessage)
+				sendDiscordMessage(hungerMessage)
 			}
 		}
 	}, 10000) 
@@ -156,9 +157,10 @@ var hungerInterval
 
 //sleep
 sleepMessage = "J should be in bed. Please put him down. :sleeping: [Virtual-j](https://virtual-j-test.herokuapp.com)"
+sleepyMessageSentOnce = false
 jIsSleepy = new Boolean(false)
 jIsAsleep = new Boolean
-var currentTime = new Date()
+var currentTime = new Date().getUTCHours()
 
 //send discord message
 function sendDiscordMessage(message) {
@@ -183,7 +185,7 @@ startHungerInterval()
 //interval for hunger - 4 hours 14400000 milliseconds
 function startHungerInterval() {
 	clearInterval(hungerInterval)
-	hungerInterval = setInterval(checkIfHungry, 900000)
+	hungerInterval = setInterval(checkIfHungry, 14400000)
 }
 
 //check jIsHungry variable
@@ -207,12 +209,14 @@ function startSleepInterval() {
 }
 
 //check if J is sleepy
+//utc. 1 = 9pm ET, 10
 function checkIfSleepy(){
-	if(currentTime.getHours() >= 20 || currentTime.getHours() < 9){
+	if(currentTime.getHours() >= 0 || currentTime.getHours() < 10){
 		console.log("J is tired.  Please turn off the lights.")
 		jIsSleepy = true
 		io.emit('j-is-sleepy', {message : "J is tired. Please turn off the lights."})
-		//sendDiscordMessage(sleepMessage)
+		sendDiscordMessage(sleepMessage)
+		sleepyMessageSentOnce = true
 	}
 	else {
 		io.emit('j-is-awake', {message : "J in not tired and should be awake."})
