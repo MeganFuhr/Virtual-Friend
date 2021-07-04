@@ -78,7 +78,7 @@ io.on('connection', function(socket) {
 
 	///////////////////////TELL CLIENTS MESSAGES////////////////////////
 	//set visibility at connection time
-	if(jIsHungry === true){
+	if(jIsHungry = true){
 		//changed to io.emit from socket.emit so every connection knows J is hungry
 		io.emit('feed-j', true)
 	}
@@ -93,15 +93,15 @@ io.on('connection', function(socket) {
 
 	///////////////////////////HUNGRY EVENTS////////////////////////////
 	socket.on('fed-j', function(msg) {
-		if(jIsHungry = true && jIsAsleep === true) {
+		if(jIsHungry && jIsAsleep) {
 				socket.emit('jIsAsleep', {message : "Server: J is asleep and cannot eat."})
 				console.log(`jIsHungry: ${jIsHungry} and jIsAsleep: ${jIsAsleep}`)
 			}
-		if(jIsHungry = true && jIsAsleep === false){
+		if(jIsHungry && !(jIsAsleep)){
 			console.log(`jIsHungry: ${jIsHungry} and jIsAsleep: ${jIsAsleep}`)
 			//need to tell all clients J has been fed by updating the class on f
 			io.emit('update-all-clients-fed','Server: a-client-fed-j')
-			jIsHungry = msg
+			jIsHungry = false
 			startHungerInterval()
 			hungerMessageSentOnce = false
 			console.log("Resetting hungerInterval")
@@ -110,7 +110,7 @@ io.on('connection', function(socket) {
 			console.log("J isn't hungry.")
 			socket.emit('jNotHungry', {message : "Server: J isn't hungry."})
 			console.log(`jIsHungry: ${jIsHungry}`)
-		}
+		} 
 	})
 
 	///////////////////////////SLEEP EVENTS////////////////////////////
@@ -159,14 +159,14 @@ discordHook = process.env.DISCORD_HOOK
 //hunger
 hungerMessage = "J is hungry.  Please feed him. :pleading_face: [Virtual-j](https://virtual-j-test.herokuapp.com)"
 hungerMessageSentOnce = false
-var jIsHungry = new Boolean(true)
+var jIsHungry = true
 var hungerInterval
 
 //sleep
 sleepMessage = "J should be in bed. Please make him go to sleep. :sleeping: [Virtual-j](https://virtual-j-test.herokuapp.com)"
 sleepyMessageSentOnce = false
-jIsSleepy = new Boolean(false)
-jIsAsleep = new Boolean
+jIsSleepy = false
+jIsAsleep = false
 var t = new Date()
 var currentTime = t.getUTCHours()
 
@@ -193,7 +193,7 @@ startHungerInterval()
 //interval for hunger - 4 hours 14400000 milliseconds
 function startHungerInterval() {
 	clearInterval(hungerInterval)
-	hungerInterval = setInterval(checkIfHungry, 14400000)
+	hungerInterval = setInterval(checkIfHungry, 6000)
 }
 
 //check jIsHungry variable
@@ -228,7 +228,7 @@ function checkIfSleepy(){
 	if (currentTime >= 10 && currentTime < 20){
 		console.log("J should be awake.")
 		jIsAsleep = false
-		io.emit('update-client-j-daytime', {message : "Server: J should be working!"})
+		io.emit('update-client-j-daytime', "wake-j-up-state-class-css")
 	}
 	else {
 		io.emit('j-is-awake', {message : "Server: J in not tired and should be awake."})
@@ -237,4 +237,11 @@ function checkIfSleepy(){
 	}
 }
 ////////////////////////////////////////////////////////////////////
+
+//all variables
+console.log(`hungerMessageSentOnce: ${hungerMessageSentOnce}`)
+console.log(`jIsHungry: ${jIsHungry} and `+  typeof(jIsHungry))
+console.log(`jIsSleepy: ${jIsSleepy}` + typeof(jIsSleepy))
+console.log(`jIsAsleep: ${jIsAsleep}` + typeof(jIsAsleep))
+console.log(`currentTime hours in UTC: ${currentTime}`)
 

@@ -106,10 +106,10 @@
   <script src="/socket.io/socket.io.js"></script>
     <script>
       //prod
-      //const socket = io("https://virtual-j-test.herokuapp.com")
+      const socket = io("https://virtual-j-test.herokuapp.com")
 
       //testing
-      const socket = io("http://localhost:4000/")
+      //const socket = io("http://localhost:4000/")
       i=0
       //get all action buttons
       const actions = document.querySelectorAll('[id^=action_')
@@ -130,6 +130,7 @@
         serverMessage(evt)    
       })
 
+      ///////////////////Sleep/////////////////////////////
       //if server returns J is not hungry, display a message
       socket.on('jNotSleepy', function (evt) {
           serverMessage(evt)    
@@ -139,7 +140,6 @@
         serverMessage(evt)  
       })
 
-      ///////////////////Sleep/////////////////////////////
       //receiving event from server.  If this event is fired, J is tired and the sleep icon should be visible.
       socket.on('j-is-sleepy', function(evt) {
         document.getElementById('state_tired').classList.add('state_visible')
@@ -181,7 +181,8 @@
       })
       socket.on('update-client-j-daytime', function(evt) {
         //update client that J should be awake since it is daytime.
-        serverMessage(evt)
+        //TODO J awake animation
+        // no one needs to wake him up.  he should wake up at 6am et from the server
         
       })
 
