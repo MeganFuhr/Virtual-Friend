@@ -106,10 +106,10 @@
   <script src="/socket.io/socket.io.js"></script>
     <script>
       //prod
-      const socket = io("https://virtual-j-test.herokuapp.com")
+      //const socket = io("https://virtual-j-test.herokuapp.com")
 
       //testing
-      //const socket = io("http://localhost:4000/")
+      const socket = io("http://localhost:4000/")
       
       i=0
       //get all action buttons
@@ -121,11 +121,21 @@
       // })
 
       ///////////////////Hunger/////////////////////////////
-      //receiving event from server.  If this event is fired, J is hungry and the hungry icon should be visible.
-      socket.on('feed-j', function(evt) {
+      //if server sends false, J is not hungry.  if server sends true, j is hungry.
+      socket.on('state-hungry', function(evt) {
+        //j is not hungry
+        if (evt.state === 'false') {
+          document.getElementById('state_hungry').classList.remove('state_visible')
+          document.getElementById('state_hungry').classList.add('state_invisible')
+          console.log(typeof(evt.message))
+          serverMessage(evt) 
+        }
+        //j is hungry
+        else {
           document.getElementById('state_hungry').classList.add('state_visible')
+          document.getElementById('state_hungry').classList.remove('state_invisible')
+        }
       })
-
       //if server returns J is not hungry, display a message
       socket.on('jNotHungry', function (evt) {
         serverMessage(evt)    
@@ -205,7 +215,7 @@
         if(document.getElementById('action_food').classList.contains('action_visible')) {
           console.log("Client: Sending server feed command.")
           //tell server you fed J.
-          socket.emit('fed-j', false)
+          socket.emit('action-fed', false)
         }
         if(document.getElementById('action_sleep').classList.contains('action_visible')) {
           console.log("Client: Sending server sleep command.")

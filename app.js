@@ -76,27 +76,25 @@ app.get('*', function(req, res){
 io.on('connection', function(socket) {
 	console.log('new connection made')
 
-	///////////////////////TELL CLIENTS MESSAGES////////////////////////
-	//set visibility at connection time
+	///////////////////////SET CLIENT STATE AT CONNECTION ////////////////////////
 	if(jIsHungry = true){
 		//changed to io.emit from socket.emit so every connection knows J is hungry
-		io.emit('feed-j', true)
+		io.emit('state-hungry', 'true')
 	}
-
 	if(jIsSleepy){
 		io.emit('sleep-j', true)
-	}
-	else{
-		io.emit('sleep-j', false)
 	}
 	////////////////////////////////////////////////////////////////////
 
 	///////////////////////////HUNGRY EVENTS////////////////////////////
-	socket.on('fed-j', function(msg) {
+	socket.on('action-fed', function(msg) {
+		//can't feed J if he is a asleep
 		if(jIsHungry && jIsAsleep) {
-				socket.emit('jIsAsleep', {message : "Server: J is asleep and cannot eat."})
+				socket.emit('jIsAsleep', {message : "Server: J is asleep and cannot eat.", state: ''})
 				console.log(`jIsHungry: ${jIsHungry} and jIsAsleep: ${jIsAsleep}`)
+				return
 			}
+			//j is hungry and not asleep, we can feed him
 		if(jIsHungry && !(jIsAsleep)){
 			console.log(`jIsHungry: ${jIsHungry} and jIsAsleep: ${jIsAsleep}`)
 			//need to tell all clients J has been fed by updating the class on f
@@ -105,10 +103,12 @@ io.on('connection', function(socket) {
 			startHungerInterval()
 			hungerMessageSentOnce = false
 			console.log("Resetting hungerInterval")
+			return			
 		} else {
-			//TODO : Tell client j isn't hungry.
+			//assuming last condition is jIsHungry = false, so we cannot feed him.
+			//Tell client j isn't hungry.
 			console.log("J isn't hungry.")
-			socket.emit('jNotHungry', {message : "Server: J isn't hungry."})
+			socket.emit('state-hungry', {message : "Server: J isn't hungry.", state : 'false'})
 			console.log(`jIsHungry: ${jIsHungry}`)
 		} 
 	})
@@ -134,21 +134,7 @@ io.on('connection', function(socket) {
 			socket.emit('jNotSleepy', {message : "Server: J isn't sleepy."})
 		}
 	})
-
-	//need to send update to client that jIsHunger=true again.
-	setInterval(function() {
-		if(jIsHungry === true) {
-			//changed from socket.emit to io.emit so all clients know J is hungry.
-			//at the same time
-			io.emit('feed-j', true)
-			if(hungerMessageSentOnce === false){
-				hungerMessageSentOnce = true	
-				//disabled webhook messaging while testing		
-				//sendDiscordMessage(hungerMessage)
-			}
-		}
-	}, 10000) 
-	////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
 
 })
 
@@ -193,14 +179,20 @@ startHungerInterval()
 //interval for hunger - 4 hours 14400000 milliseconds
 function startHungerInterval() {
 	clearInterval(hungerInterval)
-	hungerInterval = setInterval(checkIfHungry, 7200000)
+	hungerInterval = setInterval(checkIfHungry, 20000)
 }
 
 //check jIsHungry variable
 function checkIfHungry(){
-	//if J is awake, he can be hungry
-	if (jIsSleepy === false) {
-		jIsHungry = true
+	//runs after interval.
+	//J can be hungry even if he is asleep.
+	jIsHungry = true
+	console.log('20 seconds have past and J is hungry.')
+	io.emit('state-hungry', {message: 'Server: J is hungry.', state:'true'})
+	if(hungerMessageSentOnce === false){
+		hungerMessageSentOnce = true	
+		//disabled webhook messaging while testing		
+		//sendDiscordMessage(hungerMessage)
 	}
 }
 ////////////////////////////////////////////////////////////////////
@@ -218,17 +210,23 @@ function startSleepInterval() {
 //check if J is sleepy
 //utc. 0 = 8pm ET, 10 6am et
 function checkIfSleepy(){
-	if(currentTime >= 0 && currentTime < 10){
-		console.log("J is tired.  Please turn off the lights.")
+	if(currentTime >= 0 && currentTime < 12){
+		console.log("On the server: J is tired.  Please turn off the lights.")
 		jIsSleepy = true
-		io.emit('j-is-sleepy', {message : "Server: J is tired. Please turn off the lights."})
-		//sendDiscordMessage(sleepMessage)
-		sleepyMessageSentOnce = true
+		//send sleep discord message once and update client once.
+		if (sleepyMessageSentOnce === false) {
+			io.emit('j-is-sleepy', {message : "Server: J is tired. Please turn off the lights."})
+			//sendDiscordMessage(sleepMessage)
+			sleepyMessageSentOnce = true
+		}
+		return
 	}
-	if (currentTime >= 10 && currentTime < 20){
+	if (currentTime >= 12 && currentTime < 20){
+		// J should awake on his own and the sleepyMessageSentOnce should be false to reset it for the evening.
 		console.log("J should be awake.")
 		jIsAsleep = false
 		io.emit('update-client-j-daytime', "wake-j-up-state-class-css")
+		sleepyMessageSentOnce = false
 	}
 	else {
 		io.emit('j-is-awake', {message : "Server: J in not tired and should be awake."})
