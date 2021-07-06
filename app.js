@@ -216,6 +216,7 @@ function startSleepInterval() {
 //check if J is sleepy
 //utc. 0 = 8pm ET, 10 6am et
 function checkIfSleepy(){
+	var t = new Date()
 	var currentTime = t.getUTCHours()
 	if(currentTime >= 0 && currentTime < 12){
 		console.log("On the server: J is tired.  Please turn off the lights.")
@@ -268,3 +269,8 @@ function checkTime(){
     console.log(`UTC: ${h.getUTCHours()}`)
 }
 ///////////////////////////////////////////////////////////////////////
+
+
+
+//get random time
+// 4 hours plus random minute
