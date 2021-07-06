@@ -206,7 +206,7 @@ startSleepInterval()
 //check every minute if J is sleepy
 //every 61 minutes = 3660000
 function startSleepInterval() {
-	setInterval(checkIfSleepy, 3660000)
+	setInterval(checkIfSleepy, 15000)
 }
 
 //check if J is sleepy
@@ -248,7 +248,7 @@ console.log(`currentTime hours in UTC: ${currentTime}`)
 getTime()
 
 function getTime() {
-		setInterval(checkTime, 1000)
+		setInterval(checkTime, 15000)
 }
 
 function checkTime(){
