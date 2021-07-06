@@ -180,7 +180,7 @@ startHungerInterval()
 //interval for hunger - 4 hours 14400000 milliseconds
 function startHungerInterval() {
 	clearInterval(hungerInterval)
-	hungerInterval = setInterval(checkIfHungry, 20000)
+	hungerInterval = setInterval(checkIfHungry, 14400000)
 }
 
 //check jIsHungry variable
@@ -193,7 +193,7 @@ function checkIfHungry(){
 	if(hungerMessageSentOnce === false){
 		hungerMessageSentOnce = true	
 		//disabled webhook messaging while testing		
-		//sendDiscordMessage(hungerMessage)
+		sendDiscordMessage(hungerMessage)
 	}
 }
 ////////////////////////////////////////////////////////////////////
@@ -204,8 +204,9 @@ function checkIfHungry(){
 startSleepInterval()
 
 //check every minute if J is sleepy
+//every 61 minutes = 3660000
 function startSleepInterval() {
-	setInterval(checkIfSleepy, 20000)
+	setInterval(checkIfSleepy, 3660000)
 }
 
 //check if J is sleepy
@@ -218,7 +219,7 @@ function checkIfSleepy(){
 		//send sleep discord message once and update client once.
 		if (sleepyMessageSentOnce === false) {
 			io.emit('state-sleepy', {message : "Server: J is tired.", state: 'true'})
-			//sendDiscordMessage(sleepMessage)
+			sendDiscordMessage(sleepMessage)
 			sleepyMessageSentOnce = true
 		}
 		return
@@ -241,3 +242,19 @@ console.log(`jIsSleepy: ${jIsSleepy}` + typeof(jIsSleepy))
 console.log(`jIsAsleep: ${jIsAsleep}` + typeof(jIsAsleep))
 console.log(`currentTime hours in UTC: ${currentTime}`)
 
+
+/////////////////////////////////////////////////////////////////////
+//figuring out time
+getTime()
+
+function getTime() {
+		hungerInterval = setInterval(checkTime, 1000)
+}
+
+function checkTime(){
+    var t = new Date()
+
+    console.log(`ET: ${t.getHours()}`)
+    console.log(`UTC: ${t.getUTCHours()}`)
+}
+///////////////////////////////////////////////////////////////////////
