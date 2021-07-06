@@ -213,7 +213,7 @@ function startSleepInterval() {
 //utc. 0 = 8pm ET, 10 6am et
 function checkIfSleepy(){
 	var currentTime = t.getUTCHours()
-	if(currentTime >= 0 && currentTime < 10){
+	if(currentTime >= 0 && currentTime < 12){
 		console.log("On the server: J is tired.  Please turn off the lights.")
 		jIsSleepy = true
 		//send sleep discord message once and update client once.
@@ -248,13 +248,13 @@ console.log(`currentTime hours in UTC: ${currentTime}`)
 getTime()
 
 function getTime() {
-		hungerInterval = setInterval(checkTime, 1000)
+		setInterval(checkTime, 1000)
 }
 
 function checkTime(){
-    var t = new Date()
+    var h = new Date()
 
-    console.log(`ET: ${t.getHours()}`)
-    console.log(`UTC: ${t.getUTCHours()}`)
+    console.log(`ET: ${h.getHours()}`)
+    console.log(`UTC: ${h.getUTCHours()}`)
 }
 ///////////////////////////////////////////////////////////////////////
