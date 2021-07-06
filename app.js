@@ -85,6 +85,10 @@ io.on('connection', function(socket) {
 	if(jIsSleepy && jIsAsleep === false){
 		io.emit('state-sleepy', {message: 'Server On Connection: J is sleepy', state:'true'})
 	}
+
+	if(jIsSleepy = true){
+		io.emit('state-sleepy', {message : "Server: J is tired.", state: 'true'})
+	}
 	////////////////////////////////////////////////////////////////////
 
 	///////////////////////////HUNGRY EVENTS////////////////////////////
@@ -117,7 +121,7 @@ io.on('connection', function(socket) {
 	///////////////////////////SLEEP EVENTS////////////////////////////
 	//if a client put J to sleep, change variable to false
 	socket.on('action-sleep', function(msg) {
-		if(jIsAsleep === true && jIsAsleep === true){
+		if(jIsAsleep === true){
 			console.log(`J is asleep and can't be put to sleep`)
 			io.emit('state-sleepy', {message :'Server: J is already asleep.', state: 'alreadyAsleep'})
 			return
@@ -126,10 +130,10 @@ io.on('connection', function(socket) {
 			console.log(`Client put J to sleep and returned: ${msg}`)
 			//need to tell all clients J has been fed by updating the class on f
 			io.emit('update-all-clients-sleep', {message :'Server: a-client-sleep-j', state: 'true'})
+			jIsSleepy = false
 			jIsAsleep = true	
 			return
-		}
-		if (jIsSleepy === false) {
+		} else {
 			console.log("J isn't sleepy.")
 			socket.emit('state-sleepy', {message : "Server: J isn't sleepy.", state: 'jIsntSleepy'})
 			return
@@ -216,9 +220,15 @@ function checkIfSleepy(){
 	if(currentTime >= 0 && currentTime < 12){
 		console.log("On the server: J is tired.  Please turn off the lights.")
 		jIsSleepy = true
+
+		//update the client if they were already connected that J is sleepy.  If jIsAsleep = false,
+		//no one has put J to sleep and the clients should be told until he is.
+		if(jIsAsleep = false) {
+			io.emit('state-sleepy', {message : "Server: J is tired.", state: 'true'})
+		}
 		//send sleep discord message once and update client once.
 		if (sleepyMessageSentOnce === false) {
-			io.emit('state-sleepy', {message : "Server: J is tired.", state: 'true'})
+			
 			sendDiscordMessage(sleepMessage)
 			sleepyMessageSentOnce = true
 		}
