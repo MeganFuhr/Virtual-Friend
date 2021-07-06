@@ -217,7 +217,7 @@ function startSleepInterval() {
 //utc. 0 = 8pm ET, 10 6am et
 function checkIfSleepy(){
 	var currentTime = t.getUTCHours()
-	if(currentTime >= 0 && currentTime < 12){
+	if(currentTime >= 0 && currentTime < 11){
 		console.log("On the server: J is tired.  Please turn off the lights.")
 		jIsSleepy = true
 
