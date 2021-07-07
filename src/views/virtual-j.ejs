@@ -106,19 +106,14 @@
   <script src="/socket.io/socket.io.js"></script>
     <script>
       //prod
-      const socket = io("https://virtual-j-test.herokuapp.com")
+      //const socket = io("https://virtual-j-test.herokuapp.com")
 
       //testing
-      //const socket = io("http://localhost:4000/")
+      const socket = io("http://localhost:4000/")
       
       i=0
       //get all action buttons
       const actions = document.querySelectorAll('[id^=action_')
-
-      // socket.on('message-from-server', function(evt) {
-      //     document.body.appendChild(
-      //     document.createTextNode(evt))
-      // })
 
       ///////////////////Hunger/////////////////////////////
       //if server sends false, J is not hungry.  if server sends true, j is hungry.
@@ -208,7 +203,6 @@
       })
 
       ///////////////////////////////////////FUNCTIONS////////////////////////////////////////////////////
-
       function serverMessage(evt) {
         document.getElementById('server_message').classList.remove('server_message_invisible')
         document.getElementById('server_message').innerHTML = evt.message

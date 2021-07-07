@@ -77,16 +77,16 @@ io.on('connection', function(socket) {
 	console.log('new connection made')
 
 	///////////////////////SET CLIENT STATE AT CONNECTION ////////////////////////
-	if(jIsHungry = true){
+	if(jIsHungry === true){
 		//changed to io.emit from socket.emit so every connection knows J is hungry
 		io.emit('state-hungry', {message: 'Server On Connection: j is hungry',state: 'true'})
 	}
 	///this isn't working correctly.
-	if(jIsSleepy && jIsAsleep === false){
+	if(jIsSleepy === true && jIsAsleep === false){
 		io.emit('state-sleepy', {message: 'Server On Connection: J is sleepy', state:'true'})
 	}
 
-	if(jIsSleepy = true){
+	if(jIsSleepy === true){
 		io.emit('state-sleepy', {message : "Server: J is tired.", state: 'true'})
 	}
 	////////////////////////////////////////////////////////////////////
@@ -94,13 +94,13 @@ io.on('connection', function(socket) {
 	///////////////////////////HUNGRY EVENTS////////////////////////////
 	socket.on('action-fed', function(msg) {
 		//can't feed J if he is a asleep
-		if(jIsHungry && jIsAsleep) {
-				socket.emit('jIsAsleep', {message : "Server: J is asleep and cannot eat.", state: ''})
+		if(jIsHungry === true && jIsAsleep === true) {
+				socket.emit('jIsAsleep', {message : "Server: J is asleep and cannot eat.", state: 'true'})
 				console.log(`jIsHungry: ${jIsHungry} and jIsAsleep: ${jIsAsleep}`)
 				return
 			}
-			//j is hungry and not asleep, we can feed him
-		if(jIsHungry && !(jIsAsleep)){
+		//j is hungry and not asleep, we can feed him
+		if(jIsHungry === true && jIsAsleep === false){
 			console.log(`jIsHungry: ${jIsHungry} and jIsAsleep: ${jIsAsleep}`)
 			//need to tell all clients J has been fed by updating the class on f
 			io.emit('update-all-clients-fed','Server: a-client-fed-j')
@@ -109,23 +109,36 @@ io.on('connection', function(socket) {
 			hungerMessageSentOnce = false
 			console.log("Resetting hungerInterval")
 			return			
-		} else {
+		} 
+		//if j is not hungry and asleep, we cannot feed him because he is asleep.
+		if (jIsHungry === false && jIsAsleep === true) {
+			//assuming last condition is jIsHungry = false, so we cannot feed him.
+			//Tell client j isn't hungry.
+			console.log("J isn't hungry.")
+			socket.emit('state-hungry', {message : "Server: J is asleep.", state : 'false'})
+			console.log(`jIsHungry: ${jIsHungry}`)
+			return
+		} 
+		if (jIsHungry === false) {
 			//assuming last condition is jIsHungry = false, so we cannot feed him.
 			//Tell client j isn't hungry.
 			console.log("J isn't hungry.")
 			socket.emit('state-hungry', {message : "Server: J isn't hungry.", state : 'false'})
 			console.log(`jIsHungry: ${jIsHungry}`)
+			return
 		} 
 	})
-
+ 
 	///////////////////////////SLEEP EVENTS////////////////////////////
 	//if a client put J to sleep, change variable to false
 	socket.on('action-sleep', function(msg) {
+		//If J is asleep, we cannot make him asleep again
 		if(jIsAsleep === true){
 			console.log(`J is asleep and can't be put to sleep`)
 			io.emit('state-sleepy', {message :'Server: J is already asleep.', state: 'alreadyAsleep'})
 			return
 		}
+		//if J is sleepy but not asleep, we can put him to sleep
 		if(jIsSleepy === true && jIsAsleep === false) {
 			console.log(`Client put J to sleep and returned: ${msg}`)
 			//need to tell all clients J has been fed by updating the class on f
@@ -142,10 +155,7 @@ io.on('connection', function(socket) {
 ////////////////////////////////////////////////////////////////////
 
 })
-
-//https://leovoel.github.io/embed-visualizer/
 discordHook = process.env.DISCORD_HOOK
-
 
 //hunger
 hungerMessage = "J is hungry.  Please feed him. :pleading_face: [Virtual-j](https://virtual-j-test.herokuapp.com)"
@@ -184,20 +194,24 @@ startHungerInterval()
 //interval for hunger - 4 hours 14400000 milliseconds
 function startHungerInterval() {
 	clearInterval(hungerInterval)
-	hungerInterval = setInterval(checkIfHungry, 14400000)
+	hungerInterval = setInterval(checkIfHungry, 120000)
 }
 
 //check jIsHungry variable
 function checkIfHungry(){
 	//runs after interval.
 	//J can be hungry even if he is asleep.
+	//If J is asleep, let's not send alerts to Discord
 	jIsHungry = true
-	console.log('20 seconds have past and J is hungry.')
+	console.log('120 seconds have past and J is hungry.')
 	io.emit('state-hungry', {message: 'Server: J is hungry.', state:'true'})
 	if(hungerMessageSentOnce === false){
-		hungerMessageSentOnce = true	
+			
 		//disabled webhook messaging while testing		
-		sendDiscordMessage(hungerMessage)
+		if(jIsAsleep === false ){
+			hungerMessageSentOnce = true
+			sendDiscordMessage(hungerMessage)
+		}
 	}
 }
 ////////////////////////////////////////////////////////////////////
@@ -218,13 +232,13 @@ function startSleepInterval() {
 function checkIfSleepy(){
 	var t = new Date()
 	var currentTime = t.getUTCHours()
-	if(currentTime >= 0 && currentTime < 12){
+	if(currentTime > 0 && currentTime < 12){
 		console.log("On the server: J is tired.  Please turn off the lights.")
 		jIsSleepy = true
 
 		//update the client if they were already connected that J is sleepy.  If jIsAsleep = false,
 		//no one has put J to sleep and the clients should be told until he is.
-		if(jIsAsleep = false) {
+		if(jIsAsleep === false) {
 			io.emit('state-sleepy', {message : "Server: J is tired.", state: 'true'})
 		}
 		//send sleep discord message once and update client once.
@@ -233,7 +247,7 @@ function checkIfSleepy(){
 			sendDiscordMessage(sleepMessage)
 			sleepyMessageSentOnce = true
 		}
-		return
+		  
 	}
 	else {
 		// J should awake on his own and the sleepyMessageSentOnce should be false to reset it for the evening.
@@ -246,16 +260,8 @@ function checkIfSleepy(){
 }
 ////////////////////////////////////////////////////////////////////
 
-//all variables
-console.log(`hungerMessageSentOnce: ${hungerMessageSentOnce}`)
-console.log(`jIsHungry: ${jIsHungry} and `+  typeof(jIsHungry))
-console.log(`jIsSleepy: ${jIsSleepy}` + typeof(jIsSleepy))
-console.log(`jIsAsleep: ${jIsAsleep}` + typeof(jIsAsleep))
-console.log(`currentTime hours in UTC: ${currentTime}`)
-
-
 /////////////////////////////////////////////////////////////////////
-//figuring out time
+//just outputting stuff I wanat to know about for testing
 getTime()
 
 function getTime() {
@@ -264,13 +270,13 @@ function getTime() {
 
 function checkTime(){
     var h = new Date()
-
+	//logging out variables for testing
     console.log(`ET: ${h.getHours()}`)
     console.log(`UTC: ${h.getUTCHours()}`)
+	console.log(`hungerMessageSentOnce: ${hungerMessageSentOnce}`)
+	console.log(`jIsHungry: ${jIsHungry} and `+  typeof(jIsHungry))
+	console.log(`jIsSleepy: ${jIsSleepy}` + typeof(jIsSleepy))
+	console.log(`jIsAsleep: ${jIsAsleep}` + typeof(jIsAsleep))
+	console.log(`currentTime hours in UTC: ${currentTime}`)
 }
 ///////////////////////////////////////////////////////////////////////
-
-
-
-//get random time
-// 4 hours plus random minute
