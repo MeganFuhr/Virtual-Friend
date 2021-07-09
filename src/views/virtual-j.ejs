@@ -1,20 +1,66 @@
 <html>
   <style>
+      :root {
+          --max-width:600px
+      }
+      .footer {
+          max-width: var(--max-width);
+          margin-left: auto;
+          margin-right: auto;
+          
+      }
+      .footer_copyright{
+          font-size: 1rem;
+          line-height: 1.5;
+          text-align: center;
+      }
+      html{
+          font-size:100%;
+      }
+      body{
+          font-size: 1rem;
+          margin:0;
+          font-family: Arial, Helvetica, sans-serif;
+      }
+      .container {
+          max-width: var(--max-width);
+          margin-left: auto;
+          margin-right: auto;
+          display: block;
+          border: 10px solid red;
+          padding: 2rem;
+      }
+      .container_svg {
+          width: 100%;
+      }
+      *{
+          box-sizing: border-box;
+      }
+      .container_Title{
+          text-align:center;
+          font-size: 1.8rem;
+          line-height: 1.2rem;
+          color: rgb(35, 17, 102);
+      }
+      .container_HowToUse{
+          text-align:left;
+          font-size: 1.8rem;
+          line-height: 1.2rem;
+          color: rgb(35, 17, 102);
+      }
+      .list{
+
+      }
+      .list_listItem{
+          display: list-item;
+          font: 1rem;
+          line-height: 1.5;
+          margin-bottom: 1rem;
+      }
     .button:hover {
         filter: sepia(1) saturate(18.6) hue-rotate(255.6deg) brightness(1.2)
     }
-    .center {
-        margin: auto;
-        width: 60%;
-        padding: 10px;
-    } 
-    .text_center {
-      position: absolute;
-      top: 50%;
-      width: 100%;
-      text-align: center;
-      font-size: 18px;
-    }
+
     .action_invisible {
       opacity: 0.2;
     }
@@ -73,10 +119,12 @@
   </style>
   <!-- <link rel="stylesheet" href="/css/signin.css"> -->
   <body>
-
+      <header></header>
+      <section>
+<main class="container">
   </div>
-    <div class="center">
-    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="926" height="1087" viewBox="0 0 926 1087">
+        <h1 class="container_Title">Karate J!</h1>
+    <svg class="container_svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="926" height="600" viewBox="0 0 926 1087">
       <defs>
         <style>
           .cls-1 {
@@ -102,7 +150,36 @@
       <image id="state_bored" class="state_invisible" x="602" y="284" width="56" height="56" xlink:href="data:img/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAYAAACohjseAAAEsUlEQVRogd2bW4xeUxTHf74pMWU07qSKVlyqSTGJZIS2QkiD9oE0bSiClHhwSRNEGoQHrUQiSlHqgaRISIQicXklSJhR0zJomGqHzpTWTE15UVny35M1J2c+Z59zvvku/2TnzHfO2Wv9176dtdbecxDlw2TOVekEzgRmAEcDHdK2D9gD7AD6gB6gG9gC/F0DTqVgEbAO2A4cyFl2AS8CS4C2MkgV7cGpwArgNmB24tkI8CXwEzAI7NW9A+rJacBx6l3r6aMS9fuB54ANwO6CPHPhHuCXRE99DTwIXAYcESG0HVgA3Ad8lpBpDfPwZBo2L4XERuDyknU8n9CxFbiqRB2peCih9HXg7Brqm6U56XWurYUim/BvOyU2P66shaIJMB/Y7PR/kjJnc2Oa5lYQ/prmTD3wtOMxAJxalIMtFN87offXyTCPFY7Pb0WN3OKE3VI61fxY5HgNRq7YY3jXCbmpgYwLWOj4dcdWXuUqP1AzisVxs+O5Pqu0ua7SGw1sXMATju/CLBX63ARuFgTOe/6P7+2uNS5tIgNnO96PVHtxWC+9N3ncSsOzzsjUVdV/X05pQgM7FEsa/9VpLww0ce8FrJcNw8kHXa73FtSNXnGc5uy42ksLlvc1qWEePbLlfbs3RQ+u0HVTpLCOKs9G6iTrFeAc4CKggpzVPJ+Gl5U8GtGY92WfQqquDHJOB75VnaQck/2n3MYpGWQZZjp7Lsa5Oybo4AgD92dILN2QQc68jAmqQyK47VAdC9DHXJ2eCAEo2r4O+DiFzF2RAfElCb8yFFsTlgNzIrl9oPo2ynhVP96MFBLQlSD1UU45pORh8uZgngxcbFwfq5vbcgr7FFislt6uzFhe3KrhNUcL3js55fyg6/Tww6y9twCxRsMy2TRky+jxIjfaQgYGWw6r1JlIzVHRfgBKw7cKgi2jFe0d4BabVkCwZXfFbWzMaiEDZ+q60wz8NXGzFRC2EwYqyn0in7CUPbkGQNjK+xENzXHOaZPj5LTgYadurGkBA1fKlv0+eAhbVFvry60UfJHmE/uQ5YLmtW3c8FyWfLhLD2Kj+kbCOtkwlgHwhxAs6fuM/p4hrz4WdpjgpAIGG58hbXDGYqoy2xYYP64zBOPQprSBtcBbORRcWOD4SLIsz6F/rZNx5EQv3elemh+pwA78fCdPvkjpV8IoBj5dOO5LkHZOZpu+jYMulIpBtexYFsRm4wy9CpKHteVeFZ2uNTYWJDsZWO34Ls6qb42rtLKBjVtapDM+dJWvrQ2/QrBMXODXm0dQm5zVIGRp49j2n88ceA3rJGMuHJM4PdgIw/V6x8cWpLOKCjxBy7/f7M+aRi8bjzoe5hDEJoQnRLucV59xnswt7vOBz53+bjV86Xgs4XFsqHGq40SXpQ7lhRLOuVaF9dxXTuE/wEslRyHnyS/2Gzy24F1TA3smxCodNfGtu1nn2WxIHR4h61DgXODulLOoo/ou55r3Rbva3KI7tMuUXM32aq70KjL5A/hLpNvl0k1XgqhTK7ZHvz7eT7nEWF2xREP15wJRxJB2u25slEPpaTBiFjrZEn6GogyLtP2/Fdhm6+9qDFuRrXyjONDmXTkA/gUy2b7nvx1TOAAAAABJRU5ErkJggg=="/>
       <text id="server_message" class="server_message_invisible" x="345" y="622.324">server_mesage</text>
     </svg>
-</div>
+
+        <hr>
+    <h2 class="container_HowToUse">
+        How to Use
+    </h2>
+    <p>
+        <ul class="list">
+            <li class="list_listItem">Toggle Options</li>
+            <li class="list_listItem">Select Option</li>
+            <li class="list_listItem">Mystery Button</li>
+        </ul>
+    </p>
+</section>
+</main>
+<footer class="footer_copyright">
+    <a style="color:#460952" href="https://github.com/meganfuhr" aria-label="Browse code on GitHub" target="_blank" >
+        <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        role="img" 
+        aria-label="Megan's GitHub Link" 
+        height="44" 
+        width="44" 
+        viewBox="0 0 496 512">
+        <path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z">
+        
+        </path>
+    </svg>
+</a>
+<p class="footer_copyright">&copy; Megan Fuhr 2021</p>
+</footer>
   <script src="/socket.io/socket.io.js"></script>
     <script>
       //prod
@@ -285,5 +362,8 @@
         }
       }
     </script>
+    </main>
+    <footer></footer>
+
   </body>
 </html>
