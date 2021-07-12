@@ -162,6 +162,7 @@ hungerMessage = "J is hungry.  Please feed him. :pleading_face: [Virtual-j](http
 hungerMessageSentOnce = false
 var jIsHungry = false
 var hungerInterval
+const hungerGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-HUNGRY-CHIBI-02.gif?raw=true"
 
 //sleep
 sleepMessage = "J should be in bed. Please make him go to sleep. :sleeping: [Virtual-j](https://virtual-j-test.herokuapp.com)"
@@ -170,22 +171,40 @@ jIsSleepy = false
 jIsAsleep = false
 var t = new Date()
 var currentTime = t.getUTCHours()
+const sleepyGif = ""
 
 //send discord message
-function sendDiscordMessage(message) {
+function sendDiscordMessage(message, gif, state) {
 	const msg = {
-		"content": message,
-		"name": "ZilloBotTest",
-		"avatar" : "https://raw.githubusercontent.com/MeganFuhr/BingaGifs/main/j5.png"
-		}
+		"username": "Webhook",
+		"avatar_url": "https://raw.githubusercontent.com/MeganFuhr/BingaGifs/main/j5.png",
+		"embeds": [
+		  {
+			"author": {
+			  "name": "ZilloBot",
+			  "url": "http://localhost:4000/virtual-j",
+			  "icon_url": "https://raw.githubusercontent.com/MeganFuhr/BingaGifs/main/j5.png"
+			},
+			"title": state,
+			"url": "http://localhost:4000/virtual-j",
+			"description": message,
+			"color": 15258703,
+			"image": {
+			  "url": gif
+			},
+		  }
+		]
+	  }
+	  
 	
 		fetch(discordHook + "?wait=true", {
 			"method":"POST", 
 			"headers": {
 				"content-type": "application/json"},
-			"body": JSON.stringify(msg)})
+			"body": JSON.stringify(msg)
+		})
 			.then(res=>res.json()).then(console.log)
-	}
+}
 
 ///////////////////////////HUNGER////////////////////////////
 //start hunger interval at start of app.js
@@ -210,7 +229,7 @@ function checkIfHungry(){
 		//disabled webhook messaging while testing		
 		if(jIsAsleep === false ){
 			hungerMessageSentOnce = true
-			sendDiscordMessage(hungerMessage)
+			sendDiscordMessage(hungerMessage, hungerGif, "Hungry")
 		}
 	}
 }
@@ -244,7 +263,7 @@ function checkIfSleepy(){
 		//send sleep discord message once and update client once.
 		if (sleepyMessageSentOnce === false) {
 			
-			sendDiscordMessage(sleepMessage)
+			sendDiscordMessage(sleepMessage,sleepyGif, "Sleepy")
 			sleepyMessageSentOnce = true
 		}
 		  
