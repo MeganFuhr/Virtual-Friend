@@ -171,7 +171,7 @@ jIsSleepy = false
 jIsAsleep = false
 var t = new Date()
 var currentTime = t.getUTCHours()
-const sleepyGif = ""
+const sleepyGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-SLEEPY-CHIBI-02.gif?raw=true"
 
 //send discord message
 function sendDiscordMessage(message, gif, state) {
