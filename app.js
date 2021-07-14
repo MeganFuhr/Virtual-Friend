@@ -184,7 +184,7 @@ const idleGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-IDlE-C
 //send discord message
 function sendDiscordMessage(message, gif, state) {
 	const msg = {
-		"username": "Webhook",
+		"username": "ZilloBot",
 		"avatar_url": "https://raw.githubusercontent.com/MeganFuhr/BingaGifs/main/j5.png",
 		"embeds": [
 		  {
