@@ -156,22 +156,30 @@ io.on('connection', function(socket) {
 
 })
 discordHook = process.env.DISCORD_HOOK
+link = process.env.localhost || "null"
 
 //hunger
-hungerMessage = "J is hungry.  Please feed him. :pleading_face: [Virtual-j](https://virtual-j-test.herokuapp.com)"
+hungerMessage = `J is hungry.  Please feed him. :pleading_face: [Virtual-j](${link})`
 hungerMessageSentOnce = false
 var jIsHungry = false
 var hungerInterval
-const hungerGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-HUNGRY-CHIBI-02.gif?raw=true"
+
 
 //sleep
-sleepMessage = "J should be in bed. Please make him go to sleep. :sleeping: [Virtual-j](https://virtual-j-test.herokuapp.com)"
+sleepMessage = `J should be in bed. Please make him go to sleep. :sleeping: [Virtual-j](${link})`
 sleepyMessageSentOnce = false
 jIsSleepy = false
 jIsAsleep = false
 var t = new Date()
 var currentTime = t.getUTCHours()
+
+
+//gifs
+const hungerGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-HUNGRY-CHIBI-02.gif?raw=true"
 const sleepyGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-SLEEPY-CHIBI-02.gif?raw=true"
+const asleepGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-ASLEEP-CHIBI-06.gif?raw=true"
+const eatingGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-EATING-CHIBI-01.gif?raw=true"
+const idleGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-IDlE-CHIBI-01.gif?raw=true"
 
 //send discord message
 function sendDiscordMessage(message, gif, state) {
@@ -182,11 +190,11 @@ function sendDiscordMessage(message, gif, state) {
 		  {
 			"author": {
 			  "name": "ZilloBot",
-			  "url": "http://localhost:4000/virtual-j",
+			  "url": link,
 			  "icon_url": "https://raw.githubusercontent.com/MeganFuhr/BingaGifs/main/j5.png"
 			},
 			"title": state,
-			"url": "http://localhost:4000/virtual-j",
+			"url": link,
 			"description": message,
 			"color": 15258703,
 			"image": {
@@ -251,7 +259,7 @@ function startSleepInterval() {
 function checkIfSleepy(){
 	var t = new Date()
 	var currentTime = t.getUTCHours()
-	if(currentTime > 0 && currentTime < 12){
+	if(currentTime > 0 && currentTime < 10){
 		console.log("On the server: J is tired.  Please turn off the lights.")
 		jIsSleepy = true
 

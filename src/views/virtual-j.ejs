@@ -234,6 +234,13 @@
       //get all action buttons
       const actions = document.querySelectorAll('[id^=action_')
 
+      //gifs
+      const hungerGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-HUNGRY-CHIBI-02.gif?raw=true"
+      const sleepyGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-SLEEPY-CHIBI-02.gif?raw=true"
+      const asleepGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-ASLEEP-CHIBI-06.gif?raw=true"
+      const eatingGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-EATING-CHIBI-01.gif?raw=true"
+      const idleGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-IDlE-CHIBI-01.gif?raw=true"
+
       ///////////////////Hunger/////////////////////////////
       //if server sends false, J is not hungry.  if server sends true, j is hungry.
       socket.on('state-hungry', function(evt) {
@@ -247,6 +254,9 @@
         else {
           document.getElementById('state_hungry').classList.add('state_visible')
           document.getElementById('state_hungry').classList.remove('state_invisible')
+
+          //update gif
+          document.getElementById('gifs').src=hungerGif
         }
       })
 
@@ -302,6 +312,8 @@
         //console.log that a client fed J - message from server
         document.getElementById('state_hungry').classList.remove('state_visible')
         document.getElementById('state_hungry').classList.add('state_invisible')
+        //update gif
+        swapGif(idleGif)
       })
 
       socket.on('update-all-clients-sleep', function(evt) {
@@ -334,13 +346,21 @@
         )
       }
 
+      function swapGif(gif) {
+         document.getElementById('gifs').src=gif
+      }
+
 
       function Select_Action() {
         //On feed, tell server you are feeding J
         if(document.getElementById('action_food').classList.contains('action_visible')) {
           console.log("Client: Sending server feed command.")
+          //swap gif for eating gif
+          swapGif(eatingGif)
           //tell server you fed J.
-          socket.emit('action-fed', false)
+          setTimeout(() => {
+            socket.emit('action-fed', false)
+          }, 4000)                 
         }
         if(document.getElementById('action_sleep').classList.contains('action_visible')) {
           console.log("Client: Sending server sleep command.")
@@ -354,15 +374,17 @@
         switch(i) {
           case 0:
             i=1            
-            
+            //eat
             actions[0].classList.add('action_visible')
 
             actions[1].classList.remove('action_visible')
             actions[2].classList.remove('action_visible')
             actions[3].classList.remove('action_visible')
             i++
-            socket.emit('message-from-client',   
-          )
+            
+            socket.emit('message-from-client',  "I'm eating!")
+            //update gif
+           
 
             break;
           case 2:
