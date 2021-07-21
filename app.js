@@ -76,7 +76,7 @@ app.get('*', function(req, res){
 io.on('connection', function(socket) {
 	console.log('new connection made')
 
-	///////////////////////SET CLIENT STATE AT CONNECTION ////////////////////////
+	///////////////////////SET CLIENT STATE AT CONNECTION////////////////////////
 	if(jIsHungry === true){
 		//changed to io.emit from socket.emit so every connection knows J is hungry
 		io.emit('state-hungry', {message: 'Server On Connection: j is hungry',state: 'true'})
@@ -89,7 +89,9 @@ io.on('connection', function(socket) {
 	if(jIsSleepy === true){
 		io.emit('state-sleepy', {message : "Server: J is tired.", state: 'true'})
 	}
+
 	////////////////////////////////////////////////////////////////////
+
 
 	///////////////////////////HUNGRY EVENTS////////////////////////////
 	socket.on('action-fed', function(msg) {
@@ -104,17 +106,24 @@ io.on('connection', function(socket) {
 			console.log(`jIsHungry: ${jIsHungry} and jIsAsleep: ${jIsAsleep}`)
 			//need to tell all clients J has been fed by updating the class on f
 			io.emit('update-all-clients-fed','Server: a-client-fed-j')
+
+			//send gifs
+			updateClientGifs()
+
 			jIsHungry = false
+
+			//restart hunger interval
 			startHungerInterval()
 			hungerMessageSentOnce = false
-			console.log("Resetting hungerInterval")
+
+			console.log(`Resetting hungerInterval`)
 			return			
 		} 
 		//if j is not hungry and asleep, we cannot feed him because he is asleep.
 		if (jIsHungry === false && jIsAsleep === true) {
 			//assuming last condition is jIsHungry = false, so we cannot feed him.
 			//Tell client j isn't hungry.
-			console.log("J isn't hungry.")
+			console.log(`J isn't hungry.`)
 			socket.emit('state-hungry', {message : "Server: J is asleep.", state : 'false'})
 			console.log(`jIsHungry: ${jIsHungry}`)
 			return
@@ -122,7 +131,7 @@ io.on('connection', function(socket) {
 		if (jIsHungry === false) {
 			//assuming last condition is jIsHungry = false, so we cannot feed him.
 			//Tell client j isn't hungry.
-			console.log("J isn't hungry.")
+			console.log(`J isn't hungry.`)
 			socket.emit('state-hungry', {message : "Server: J isn't hungry.", state : 'false'})
 			console.log(`jIsHungry: ${jIsHungry}`)
 			return
@@ -141,13 +150,14 @@ io.on('connection', function(socket) {
 		//if J is sleepy but not asleep, we can put him to sleep
 		if(jIsSleepy === true && jIsAsleep === false) {
 			console.log(`Client put J to sleep and returned: ${msg}`)
+
 			//need to tell all clients J has been fed by updating the class on f
 			io.emit('update-all-clients-sleep', {message :'Server: a-client-sleep-j', state: 'true'})
 			jIsSleepy = false
 			jIsAsleep = true	
 			return
 		} else {
-			console.log("J isn't sleepy.")
+			console.log(`J isn't sleepy.`)
 			socket.emit('state-sleepy', {message : "Server: J isn't sleepy.", state: 'jIsntSleepy'})
 			return
 		}
@@ -178,8 +188,10 @@ var currentTime = t.getUTCHours()
 const hungerGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-HUNGRY-CHIBI-02.gif?raw=true"
 const sleepyGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-SLEEPY-CHIBI-02.gif?raw=true"
 const asleepGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-ASLEEP-CHIBI-06.gif?raw=true"
-const eatingGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-EATING-CHIBI-01.gif?raw=true"
+const eatingGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-EATING-CHIBI-02.gif?raw=true"
 const idleGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-IDlE-CHIBI-01.gif?raw=true"
+
+var gifsToClient = []
 
 //send discord message
 function sendDiscordMessage(message, gif, state) {
@@ -221,7 +233,7 @@ startHungerInterval()
 //interval for hunger - 4 hours 14400000 milliseconds
 function startHungerInterval() {
 	clearInterval(hungerInterval)
-	hungerInterval = setInterval(checkIfHungry, 14400000)
+	hungerInterval = setInterval(checkIfHungry, 30000)
 }
 
 //check jIsHungry variable
@@ -229,15 +241,22 @@ function checkIfHungry(){
 	//runs after interval.
 	//J can be hungry even if he is asleep.
 	//If J is asleep, let's not send alerts to Discord
+
+	//set jIsHungry to true
 	jIsHungry = true
-	console.log('120 seconds have past and J is hungry.')
+	console.log(`4 hours have past and J is hungry.`)
+
+	//tell all clients J is hungry
 	io.emit('state-hungry', {message: 'Server: J is hungry.', state:'true'})
-	if(hungerMessageSentOnce === false){
-			
+	
+	//send gifs
+	updateClientGifs()
+
+	if(hungerMessageSentOnce === false){	
 		//disabled webhook messaging while testing		
 		if(jIsAsleep === false ){
 			hungerMessageSentOnce = true
-			sendDiscordMessage(hungerMessage, hungerGif, "Hungry")
+			//sendDiscordMessage(hungerMessage, hungerGif, "Hungry")
 		}
 	}
 }
@@ -259,8 +278,8 @@ function startSleepInterval() {
 function checkIfSleepy(){
 	var t = new Date()
 	var currentTime = t.getUTCHours()
-	if(currentTime > 0 && currentTime < 10){
-		console.log("On the server: J is tired.  Please turn off the lights.")
+	if(currentTime > 0 && currentTime < 12){
+		console.log(`On the server: J is tired.  Please turn off the lights.`)
 		jIsSleepy = true
 
 		//update the client if they were already connected that J is sleepy.  If jIsAsleep = false,
@@ -269,22 +288,48 @@ function checkIfSleepy(){
 			io.emit('state-sleepy', {message : "Server: J is tired.", state: 'true'})
 		}
 		//send sleep discord message once and update client once.
-		if (sleepyMessageSentOnce === false) {
-			
-			sendDiscordMessage(sleepMessage,sleepyGif, "Sleepy")
+		if (sleepyMessageSentOnce === false) {	
+			//sendDiscordMessage(sleepMessage,sleepyGif, "Sleepy")
 			sleepyMessageSentOnce = true
-		}
-		  
+		}		  
 	}
 	else {
 		// J should awake on his own and the sleepyMessageSentOnce should be false to reset it for the evening.
-		console.log("J should be awake.")
+		console.log(`${Date.now} --- J should be awake.`)
 		jIsSleepy = false
 		jIsAsleep = false
 		io.emit('state-sleepy', {message: "It's worktime.", state: 'false'})
 		sleepyMessageSentOnce = false
 	}
+	//send gifs
+	updateClientGifs()
 }
+
+	////////////////////////////Gif Management////////////////////////////////////////
+	function updateClientGifs() {
+		gifsToClient = []
+
+		if(jIsAsleep === true) {
+			gifsToClient.push(asleepGif)
+			io.emit('update-all-clients-gifs', {gifs:gifsToClient})
+			return
+		}
+		if(jIsSleepy === true) {
+			gifsToClient.push(sleepyGif)
+		}
+		if(jIsHungry === true) {
+			gifsToClient.push(hungerGif)
+		}
+		if(!jIsHungry && !jIsAsleep && !jIsSleepy) {
+			gifsToClient = []
+			gifsToClient.push(idleGif)
+		}
+
+		console.log(`SERVER: GifsToClient = ${chalk.red(gifsToClient)}`)
+		io.emit('update-all-clients-gifs', {gifs:gifsToClient})
+	}
+
+	///////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////
@@ -305,5 +350,6 @@ function checkTime(){
 	console.log(`jIsSleepy: ${jIsSleepy}` + typeof(jIsSleepy))
 	console.log(`jIsAsleep: ${jIsAsleep}` + typeof(jIsAsleep))
 	console.log(`currentTime hours in UTC: ${currentTime}`)
+	console.log(`THis is what the server is sending for Gifs: ${gifsToClient}`)
 }
 ///////////////////////////////////////////////////////////////////////

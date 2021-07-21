@@ -239,17 +239,29 @@
     const hungerGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-HUNGRY-CHIBI-02.gif?raw=true"
     const sleepyGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-SLEEPY-CHIBI-02.gif?raw=true"
     const asleepGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-ASLEEP-CHIBI-06.gif?raw=true"
-    const eatingGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-EATING-CHIBI-01.gif?raw=true"
+    const eatingGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-EATING-CHIBI-02.gif?raw=true"
     const idleGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-IDlE-CHIBI-01.gif?raw=true"
 
     //Gif array
-    let gifCollection = [asleepGif, sleepyGif]
+    let gifCollection = []
 
     //Gif Index counter
     let gifIndex = 0;  // This will keep track of the current array index to use
 
     //HTML Element for Gifs
     let img = document.getElementById('gifs'); // Get your reference just once, not on each function call
+    //////////////////////////ALL GIFS///////////////////////
+    //change gifs
+    autoChange();
+
+    socket.on('update-all-clients-gifs', function(evt) {
+      gifCollection = []
+      evt.gifs.forEach(element => {
+        console.log(`From the server, this element is added : ${element}`)
+        gifCollection.push(element)
+      })     
+    })
+
 
     ///////////////////Hunger/////////////////////////////
     //if server sends false, J is not hungry.  if server sends true, j is hungry.
@@ -264,9 +276,6 @@
       else {
         document.getElementById('state_hungry').classList.add('state_visible')
         document.getElementById('state_hungry').classList.remove('state_invisible')
-
-        //update gif
-        document.getElementById('gifs').src=hungerGif
       }
     })
 
@@ -322,8 +331,7 @@
       //console.log that a client fed J - message from server
       document.getElementById('state_hungry').classList.remove('state_visible')
       document.getElementById('state_hungry').classList.add('state_invisible')
-      //update gif
-      swapGif(idleGif)
+
     })
 
     socket.on('update-all-clients-sleep', function(evt) {
@@ -331,7 +339,7 @@
       console.log(evt.message + ' - server told all a client put J to sleep')
       document.getElementById('state_sleepy').classList.remove('state_visible')
       document.getElementById('state_sleepy').classList.add('state_invisible')
-      
+      clientJAsleep = true     
     })
 
     socket.on('update-client-j-already-asleep', function(evt) {
@@ -363,43 +371,57 @@
 
   //https://stackoverflow.com/questions/50788951/loop-through-image-array-with-pure-javascript
     function autoChange() {
+      //what is in the array when called
+      console.log(`Inside autochange: ${gifCollection}`)
       // You only need to ensure that the index isn't out of bounds
       if(gifIndex < gifCollection.length){
         img.src = gifCollection[gifIndex];      // If not, use the index
         gifIndex++;                        // Then, increment it
-        console.clear();
-        console.log(gifCollection[gifIndex]);
       } else {
         gifIndex = 0;  // If so, reset the index
       }
       // Now that the right image is showing, wait 3 seconds and call the function all over again
-      setTimeout(autoChange, 3000);  
+      setTimeout(autoChange, 5000);  
     }
-
-    autoChange();
-
 
     function Select_Action() {
       //On feed, tell server you are feeding J
       if(document.getElementById('action_food').classList.contains('action_visible')) {
-        console.log("Client: Sending server feed command.")
         //only feed J if he is hungry
         if (document.getElementById('state_hungry').classList.contains('state_visible')){
-          //swap gif for eating gif
-          swapGif(eatingGif)
-          //tell server you fed J.
-          setTimeout(() => {
-            socket.emit('action-fed', false)
-          }, 4000)    
-        }
-            
+          if(clientJAsleep === true){
+            return
+          }else {
+            //remove hungerGif
+            gifCollection = gifCollection.filter(gif => gif != hungerGif)
+          
+            //swap gif for eating gif
+            swapGif(eatingGif)
+
+            //tell server you fed J.
+            setTimeout(() => {
+              socket.emit('action-fed', false)
+              }, 4000)    
+          }
+        }     
       }
       if(document.getElementById('action_sleep').classList.contains('action_visible')) {
-        console.log("Client: Sending server sleep command.")
-        //tell server you put J to sleep
-        socket.emit('action-sleep', false)
-      }
+        if (document.getElementById('state_sleepy').classList.contains('state_visible')){
+          //remove sleepyGif
+          //gifCollection.pop(sleepyGif) 
+          gifCollection = gifCollection.filter(gif => gif != sleepyGif)
+
+          //swap gif for asleep gif
+          swapGif(asleepGif)
+
+          //tell server you put J to sleep
+          setTimeout(() => {
+              socket.emit('action-sleep', false)
+            }, 1000)    
+          }
     }
+  }
+    
 
     function Toggle_Action() {
 
