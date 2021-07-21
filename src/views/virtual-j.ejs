@@ -410,6 +410,7 @@
           //remove sleepyGif
           //gifCollection.pop(sleepyGif) 
           gifCollection = gifCollection.filter(gif => gif != sleepyGif)
+          gifCollection = gifCollection.filter(gif => gif != hungerGif)
 
           //swap gif for asleep gif
           swapGif(asleepGif)
