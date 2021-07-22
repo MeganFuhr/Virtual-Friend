@@ -107,9 +107,6 @@ io.on('connection', function(socket) {
 			//need to tell all clients J has been fed by updating the class on f
 			io.emit('update-all-clients-fed','Server: a-client-fed-j')
 
-			//send gifs
-			updateClientGifs()
-
 			jIsHungry = false
 
 			//restart hunger interval
@@ -346,10 +343,11 @@ function checkTime(){
     console.log(`ET: ${h.getHours()}`)
     console.log(`UTC: ${h.getUTCHours()}`)
 	console.log(`hungerMessageSentOnce: ${hungerMessageSentOnce}`)
-	console.log(`jIsHungry: ${jIsHungry} and `+  typeof(jIsHungry))
-	console.log(`jIsSleepy: ${jIsSleepy}` + typeof(jIsSleepy))
-	console.log(`jIsAsleep: ${jIsAsleep}` + typeof(jIsAsleep))
+	console.log(`sleepyMessageSentOnce: ${sleepyMessageSentOnce}`)
+	console.log(`jIsHungry: ${jIsHungry} and type of `+  typeof(jIsHungry))
+	console.log(`jIsSleepy: ${jIsSleepy} and type of ` + typeof(jIsSleepy))
+	console.log(`jIsAsleep: ${jIsAsleep} and type of ` + typeof(jIsAsleep))
 	console.log(`currentTime hours in UTC: ${currentTime}`)
-	console.log(`THis is what the server is sending for Gifs: ${gifsToClient}`)
+	console.log(`This is what the server is sending for Gifs: ${gifsToClient}`)
 }
 ///////////////////////////////////////////////////////////////////////

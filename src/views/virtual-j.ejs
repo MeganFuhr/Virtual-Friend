@@ -235,6 +235,9 @@
     //get all action buttons
     const actions = document.querySelectorAll('[id^=action_')
     
+    //states
+    clientJAsleep = false
+
     //gifs
     const hungerGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-HUNGRY-CHIBI-02.gif?raw=true"
     const sleepyGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-SLEEPY-CHIBI-02.gif?raw=true"
@@ -361,7 +364,7 @@
         {
           document.getElementById('server_message').classList.remove('server_message_visible')
           document.getElementById('server_message').classList.add('server_message_invisible')
-        }, 2000     
+        }, 3000     
       )
     }
 
@@ -382,7 +385,7 @@
         gifIndex = 0;  // If so, reset the index
       }
       // Now that the right image is showing, wait 3 seconds and call the function all over again
-      setTimeout(autoChange, 5000);  
+      setTimeout(autoChange, 2000);  
     }
 
     function Select_Action() {
@@ -394,35 +397,36 @@
             return
           }else {
             //remove hungerGif
-            gifCollection = gifCollection.filter(gif => gif != hungerGif)
-          
+            gifCollection = [eatingGif]
+
             //swap gif for eating gif
             swapGif(eatingGif)
 
+            socket.emit('action-fed', false)
             //tell server you fed J.
-            setTimeout(() => {
-              socket.emit('action-fed', false)
-              }, 4000)    
+           // setTimeout(() => {
+            //  socket.emit('action-fed', false)
+            //  }, 1000)    
           }
         }     
       }
       if(document.getElementById('action_sleep').classList.contains('action_visible')) {
         if (document.getElementById('state_sleepy').classList.contains('state_visible')){
-          //remove sleepyGif
-          //gifCollection.pop(sleepyGif) 
-          gifCollection = gifCollection.filter(gif => gif != sleepyGif)
-          gifCollection = gifCollection.filter(gif => gif != hungerGif)
 
+          //remove sleepyGif
+          gifCollection = [asleepGif]
+        
           //swap gif for asleep gif
           swapGif(asleepGif)
-
+          socket.emit('action-sleep', false)
           //tell server you put J to sleep
-          setTimeout(() => {
-              socket.emit('action-sleep', false)
-            }, 1000)    
-          }
+          //setTimeout(() => {
+          //    socket.emit('action-sleep', false)
+          //  }, 1000)    
+          //}
     }
   }
+}
     
 
     function Toggle_Action() {
