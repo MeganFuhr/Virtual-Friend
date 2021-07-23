@@ -53,8 +53,14 @@
     <p>
         <ul class="list">
             <li class="list_listItem">Hover over the buttons to learn what they do.</li>
-            <li class="list_listItem">J will let you know what he needs on the top row: Lazy, Tired, Hungry, Bored.</li>
-            <li class="list_listItem">Toggle through available actions on the bottom row: Feed, Exercise, Game, Sleep</li>
+            <li class="list_listItem">J will let you know what he needs on the top row: Lazy, Sleepy, Hungry, Bored.</li>
+            <li class="list_listItem">Toggle through available actions on the bottom row: 
+              <ul class="list">
+                <li class="list_listItemInner"><b>FEED</b> J when he is <b>hungry</b>.</li>
+                <li class="list_listItemInner"><b>EXERCISE</b> J when is <b>lazy</b>.</li>
+                <li class="list_listItemInner"><b>GAME</b> with J when he is <b>bored</b>.</li>
+                <li class="list_listItemInner"><b>SLEEP</b> J when he is <b>sleepy</b>.</li>
+              </ul>
             <li class="list_listItem">Select an action to engage with J!</li>
             
         </ul>
@@ -156,7 +162,7 @@
         gifCollection.push(element)
       })     
     })
-    
+
     /////////////////////////HUNGER///////////////////////
 
     //if server sends false, J is not hungry.  if server sends true, j is hungry.
