@@ -93,14 +93,15 @@
         <path d="M13.3778 25.6346H0V12.0371H13.3778V25.6346ZM1.87313 23.7615H11.5625V13.8755H1.87313V23.7615Z" fill="#2F2F3A"></path>
     </svg>
 </a>
-<p class="footer_copyright">&copy; Megan Fuhr 2021</p>
+<p id="footer" class="footer_copyright"></p>
 </footer>
   <script src="/socket.io/socket.io.js"></script>
+ 
   <script>
+    
     ///////////////////////////////////////VARIABLES////////////////////////////////////////////////////
     //prod
-    //const socket = io("https://virtual-j-test.herokuapp.com")
-
+    //const socket = io("https://virtual-j.herokuapp.com")
     //testing
     const socket = io("http://localhost:4000/")
     
@@ -110,7 +111,7 @@
     //get all action buttons
     const actions = document.querySelectorAll('[id^=action_')
     
-    //states
+    //Store at the client that J is Asleep
     clientJAsleep = false
 
     //gifs
@@ -129,6 +130,9 @@
     //HTML Element for Gifs
     let img = document.getElementById('gifs'); // Get your reference just once, not on each function call
 
+    //update year in footer
+    var year = new Date() 
+    document.getElementById("footer").innerHTML = "&copy; Megan Fuhr " + year.getFullYear()
     //////////////////////////ALL GIFS///////////////////////
 
     //change gifs
@@ -193,21 +197,22 @@
     })
 
 
-    //if server returns J is not hungry, display a message
+    //receive event from server that J is not hungry and display a message
     socket.on('jNotSleepy', function (evt) {
         serverMessage(evt)    
     })
 
+    //receive event from server that J is already asleep and display a message
     socket.on('jIsAsleep', function(evt) {
       serverMessage(evt)  
     })
 
-    //receiving event from server.  If this event is fired, J is tired and the sleep icon should be visible.
+    //receive event from server that J is tired and the sleep icon should be visible.
     socket.on('j-is-sleepy', function(evt) {
       document.getElementById('state_tired').classList.add('state_visible')
     })
 
-    //receive event from server that a single client has fed J, so we need to tell this client that 
+    //receive event from server that a client has fed J, so we need to tell this client that 
     //j is no longer hungry
     socket.on('update-all-clients-fed', function(evt) {
       //console.log that a client fed J - message from server
@@ -216,6 +221,7 @@
 
     })
 
+    //receive event from the server that a client put J to sleep
     socket.on('update-all-clients-sleep', function(evt) {
       //update classes to show J is tired
       console.log(evt.message + ' - server told all a client put J to sleep')
@@ -299,10 +305,9 @@
 
           //tell the server
           socket.emit('action-sleep', false)
-
-    }
-  }
-}
+        }
+      }
+   }
     
 
     function Toggle_Action() {
@@ -316,13 +321,9 @@
           actions[2].classList.remove('action_visible')
           actions[3].classList.remove('action_visible')
           i++
-          
-          socket.emit('message-from-client',  "I'm eating!")
-          //update gif
-          
-
           break;
         case 2:
+          //exercise
           i=2
           actions[1].classList.add('action_visible')
 
@@ -330,11 +331,9 @@
           actions[2].classList.remove('action_visible')
           actions[3].classList.remove('action_visible')
           i++
-          socket.emit('message-from-client', 
-          "I'm excercise!"
-        )
           break;
         case 3:
+          //Play
           i=3
           actions[2].classList.add('action_visible')
 
@@ -342,11 +341,9 @@
           actions[1].classList.remove('action_visible')
           actions[3].classList.remove('action_visible')
           i++
-          socket.emit('message-from-client', 
-          "I'm play!"
-        )
           break;
         case 4:
+          //sleep
           i=4
           actions[3].classList.add('action_visible')
 
@@ -354,15 +351,10 @@
           actions[1].classList.remove('action_visible')
           actions[2].classList.remove('action_visible')
           i=0
-          socket.emit('message-from-client', 
-          "I'm sleepy!"
-        )
           break;
       }
     }
     </script>
     </main>
-    <footer></footer>
-
   </body>
 </html>

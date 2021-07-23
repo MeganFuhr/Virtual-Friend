@@ -159,18 +159,18 @@ io.on('connection', function(socket) {
 			return
 		}
 	})
+})
 ////////////////////////////////////////////////////////////////////
 
-})
+
 discordHook = process.env.DISCORD_HOOK
-link = process.env.localhost || "null"
+link = process.env.localhost || "https://virtual-j.herokuapp.com"
 
 //hunger
 hungerMessage = `J is hungry.  Please feed him. :pleading_face: [Virtual-j](${link})`
 hungerMessageSentOnce = false
 var jIsHungry = false
 var hungerInterval
-
 
 //sleep
 sleepMessage = `J should be in bed. Please make him go to sleep. :sleeping: [Virtual-j](${link})`
@@ -179,7 +179,6 @@ jIsSleepy = false
 jIsAsleep = false
 var t = new Date()
 var currentTime = t.getUTCHours()
-
 
 //gifs
 const hungerGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-HUNGRY-CHIBI-02.gif?raw=true"
@@ -246,7 +245,7 @@ function checkIfHungry(){
 	//tell all clients J is hungry
 	io.emit('state-hungry', {message: 'Server: J is hungry.', state:'true'})
 	
-	//send gifs
+	//update all clients with new gif array
 	updateClientGifs()
 
 	if(hungerMessageSentOnce === false){	
