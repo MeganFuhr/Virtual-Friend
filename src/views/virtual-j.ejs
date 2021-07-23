@@ -1,136 +1,9 @@
 <html>
-  <style>
-      :root {
-          --max-width:600px;
-          /* background-color:#d8d8d8; */
-      }
-      .footer {
-          max-width: var(--max-width);
-          margin-left: auto;
-          margin-right: auto;
-          
-      }
-      .footer_copyright{
-          font-size: 1rem;
-          line-height: 1.5;
-          text-align: center;
-          text-decoration: none;
-      }
-      html{
-          font-size:100%;
-      }
-      body{
-          font-size: 1rem;
-          margin:0;
-          font-family: Arial, Helvetica, sans-serif;
-      }
-      .container {
-          max-width: var(--max-width);
-          margin-left: auto;
-          margin-right: auto;
-          display: block;
-          /* border: 10px solid red; */
-          padding: 2rem;
-      }
-      .container_svg {
-          width: 100%;
-          position: relative;
-      }
-      .gifs{
-        position: absolute;
-        margin-left: 10.5rem;
-        margin-top: 11rem;
-        width: 12.5rem;
-        height: 12rem;
-      }
-      *{
-          box-sizing: border-box;
-      }
-      .container_Title{
-          text-align:center;
-          font-size: 1.8rem;
-          line-height: 1.2rem;
-          color: rgb(35, 17, 102);
-      }
-      .container_HowToUse{
-          text-align:left;
-          font-size: 1.8rem;
-          line-height: 1.2rem;
-          color: rgb(35, 17, 102);
-      }
-      .list{
-
-      }
-      .list_listItem{
-          display: list-item;
-          font: 1rem;
-          line-height: 1.5;
-          margin-bottom: 1rem;
-      }
-    .button:hover {
-        filter: sepia(1) saturate(18.6) hue-rotate(255.6deg) brightness(1.2)
-    }
-
-    .action_invisible {
-      opacity: 0.2;
-    }
-    .action_visible {
-      opacity: 1.0;
-    }
-    .state_invisible {
-      opacity: 0.2;
-    }
-    .state_visible {
-      opacity: 1.0;
-    }
-
-    .server_message_invisible {     
-      visibility: hidden;
-      opacity: 0;
-      font-size: 37.5px;
-      fill: #3d33cd;
-      font-family: Ubuntu;
-      width: 50%;
-      margin-left: auto;
-      margin-right: auto;
-      text-align: center;
-      margin-top: 20px;
-      transition: visibility 0s 2s, opacity 2s linear;
-    }
-
-    .server_message_visible{
-      font-size: 37.5px;
-      fill: #3d33cd;
-      font-family: Ubuntu;
-      width: 50%;
-      margin-left: auto;
-      margin-right: auto;
-      text-align: center;
-      margin-top: 20px;
-    
-     animation:signup-response 0.5s 1;
-     -webkit-animation:signup-response 0.5s 1;
-     animation-fill-mode: forwards;
-     
-     animation-delay:2s;
-     -webkit-animation-delay:1s; /* Safari and Chrome */
-     -webkit-animation-fill-mode: forwards;
-    } 
-
-    @keyframes signup-response{
-        from {opacity :1;}
-        to {opacity :0;}
-    }
-
-    @-webkit-keyframes signup-response{
-        from {opacity :1;}
-        to {opacity :0;}
-    }
-  </style>
-  <!-- <link rel="stylesheet" href="/css/signin.css"> -->
   <body>
-      <header></header>
-      <section>
+      <header>
+        <link rel="stylesheet" href="/css/virtual-j.css">
+      </header>
+<section>
 <main class="container">
   </div>
         <h1 class="container_Title">Kung Fu J!</h1>
@@ -231,7 +104,9 @@
     //testing
     const socket = io("http://localhost:4000/")
     
+    //used for Toggle_Action() counter
     i=0
+
     //get all action buttons
     const actions = document.querySelectorAll('[id^=action_')
     
@@ -253,10 +128,13 @@
 
     //HTML Element for Gifs
     let img = document.getElementById('gifs'); // Get your reference just once, not on each function call
+
     //////////////////////////ALL GIFS///////////////////////
+
     //change gifs
     autoChange();
 
+    //receive what should be in the gif array from server
     socket.on('update-all-clients-gifs', function(evt) {
       gifCollection = []
       evt.gifs.forEach(element => {
@@ -266,7 +144,8 @@
     })
 
 
-    ///////////////////Hunger/////////////////////////////
+    /////////////////////////HUNGER///////////////////////
+
     //if server sends false, J is not hungry.  if server sends true, j is hungry.
     socket.on('state-hungry', function(evt) {
       //j is not hungry
@@ -283,7 +162,7 @@
     })
 
 
-    ///////////////////Sleep/////////////////////////////
+    /////////////////////////SLEEP///////////////////////
       socket.on('state-sleepy', function(evt) {
       //j is not sleepy
       if (evt.state === 'false') {
@@ -311,7 +190,6 @@
         serverMessage(evt) 
         return
       }
-      
     })
 
 
@@ -356,6 +234,8 @@
     })
 
     ///////////////////////////////////////FUNCTIONS////////////////////////////////////////////////////
+
+    //receive messages from server.  Fades out.
     function serverMessage(evt) {
       document.getElementById('server_message').classList.remove('server_message_invisible')
       document.getElementById('server_message').innerHTML = evt.message
@@ -368,12 +248,13 @@
       )
     }
 
+    //swap gif immediately once called
     function swapGif(gif) {
         document.getElementById('gifs').src=gif
     }
 
-
-  //https://stackoverflow.com/questions/50788951/loop-through-image-array-with-pure-javascript
+    //auto rotate through array of gifs 
+    //https://stackoverflow.com/questions/50788951/loop-through-image-array-with-pure-javascript
     function autoChange() {
       //what is in the array when called
       console.log(`Inside autochange: ${gifCollection}`)
@@ -384,7 +265,7 @@
       } else {
         gifIndex = 0;  // If so, reset the index
       }
-      // Now that the right image is showing, wait 3 seconds and call the function all over again
+      // Now that the right image is showing, wait 2 seconds and call the function all over again
       setTimeout(autoChange, 2000);  
     }
 
@@ -402,11 +283,8 @@
             //swap gif for eating gif
             swapGif(eatingGif)
 
-            socket.emit('action-fed', false)
-            //tell server you fed J.
-           // setTimeout(() => {
-            //  socket.emit('action-fed', false)
-            //  }, 1000)    
+            //tell the server
+            socket.emit('action-fed', false)  
           }
         }     
       }
@@ -418,19 +296,16 @@
         
           //swap gif for asleep gif
           swapGif(asleepGif)
+
+          //tell the server
           socket.emit('action-sleep', false)
-          //tell server you put J to sleep
-          //setTimeout(() => {
-          //    socket.emit('action-sleep', false)
-          //  }, 1000)    
-          //}
+
     }
   }
 }
     
 
     function Toggle_Action() {
-
       switch(i) {
         case 0:
           i=1            
