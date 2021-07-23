@@ -229,7 +229,7 @@ startHungerInterval()
 //interval for hunger - 4 hours 14400000 milliseconds
 function startHungerInterval() {
 	clearInterval(hungerInterval)
-	hungerInterval = setInterval(checkIfHungry, 30000)
+	hungerInterval = setInterval(checkIfHungry, 14400000)
 }
 
 //check jIsHungry variable
@@ -252,7 +252,7 @@ function checkIfHungry(){
 		//disabled webhook messaging while testing		
 		if(jIsAsleep === false ){
 			hungerMessageSentOnce = true
-			//sendDiscordMessage(hungerMessage, hungerGif, "Hungry")
+			sendDiscordMessage(hungerMessage, hungerGif, "Hungry")
 		}
 	}
 }
@@ -285,7 +285,7 @@ function checkIfSleepy(){
 		}
 		//send sleep discord message once and update client once.
 		if (sleepyMessageSentOnce === false) {	
-			//sendDiscordMessage(sleepMessage,sleepyGif, "Sleepy")
+			sendDiscordMessage(sleepMessage,sleepyGif, "Sleepy")
 			sleepyMessageSentOnce = true
 		}		  
 	}
