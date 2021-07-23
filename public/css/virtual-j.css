@@ -124,3 +124,10 @@ animation-delay:2s;
   from {opacity :1;}
   to {opacity :0;}
 }
+
+#tooltip {
+    background: rgb(255, 255, 255);
+    border: 3px solid rgb(247, 69, 217);
+    border-radius: 25px;
+    padding: 5px;
+}
