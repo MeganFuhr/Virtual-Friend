@@ -205,7 +205,7 @@ function sendDiscordMessage(message, gif, state) {
 			"url": link,
 			"description": message,
 			"color": 15258703,
-			"image": {
+			"thumbnail": {
 			  "url": gif
 			},
 		  }
