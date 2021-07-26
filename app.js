@@ -76,18 +76,19 @@ app.get('*', function(req, res){
 io.on('connection', function(socket) {
 	console.log('new connection made')
 
+	updateClientGifs()
 	///////////////////////SET CLIENT STATE AT CONNECTION////////////////////////
 	if(jIsHungry === true){
 		//changed to io.emit from socket.emit so every connection knows J is hungry
 		io.emit('state-hungry', {message: 'Server On Connection: j is hungry',state: 'true'})
 	}
-	///this isn't working correctly.
+	///if j is sleep but not asleep.
 	if(jIsSleepy === true && jIsAsleep === false){
 		io.emit('state-sleepy', {message: 'Server On Connection: J is sleepy', state:'true'})
 	}
-
-	if(jIsSleepy === true){
-		io.emit('state-sleepy', {message : "Server: J is tired.", state: 'true'})
+	//if j is asleep and a new connection is made, show him asleep but not sleepy
+	if(jIsAsleep === true ) {
+		io.emit('update-all-clients-sleep', {message: 'Server On Connection: J is sleepy'})
 	}
 
 	////////////////////////////////////////////////////////////////////
