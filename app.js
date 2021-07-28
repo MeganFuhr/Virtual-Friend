@@ -174,7 +174,7 @@ var jIsHungry = false
 var hungerInterval
 
 //sleep
-sleepMessage = `J should be in bed. Please make him go to sleep. :sleeping: [Virtual-j](${link})`
+sleepMessage = `J is sleepy. Please make him go to bed. :sleeping: [Virtual-j](${link})`
 sleepyMessageSentOnce = false
 jIsSleepy = false
 jIsAsleep = false
@@ -275,7 +275,7 @@ function startSleepInterval() {
 function checkIfSleepy(){
 	var t = new Date()
 	var currentTime = t.getUTCHours()
-	if(currentTime > 0 && currentTime < 12){
+	if(currentTime > 0 && currentTime < 10){
 		console.log(`On the server: J is tired.  Please turn off the lights.`)
 		jIsSleepy = true
 
@@ -350,4 +350,60 @@ function checkTime(){
 	console.log(`currentTime hours in UTC: ${currentTime}`)
 	console.log(`This is what the server is sending for Gifs: ${gifsToClient}`)
 }
+
+
+//////////////////////////////new hunger /time function/////////////////
+function getCurrentTime() {
+	var time = new Date()
+	return time
+}
+
+async function checkIfHungry2() {
+	const time = await getCurrentTime()
+	
+	//12 UTC = 8am ET
+	if (time.getUTCHours() == 12 ) {
+
+	}
+}
+
+function getRandomMinute() {
+	return Math.round(Math.random() * (60 - 1) + 1)
+}
+
+function setHungerTimes() {
+	var breakfast = new Date()
+	var lunch = new Date()
+	var dinner = new Date()
+
+	breakfast = breakfast.setUTCHours(12, getRandomMinute())
+	lunch = lunch.setUTCHours(4, getRandomMinute())
+	dinner = dinner.setUTCHours(10, getRandomMinute())
+
+	breakfast = new Date(breakfast)
+	lunch = new Date(lunch)
+	dinner = new Date(dinner)
+
+	return {
+		breakfast:breakfast,
+		lunch:lunch,
+		dinner:dinner
+	}
+
+	///above returns the following array of strings
+	//breakfast: Wed Jul 28 2021 08:07:11 GMT-0400 (Eastern Daylight Time) {}
+	//dinner: Wed Jul 28 2021 06:27:11 GMT-0400 (Eastern Daylight Time) {}
+	//lunch: Wed Jul 28 2021 00:21:11 GMT-0400 (Eastern Daylight Time) {}
+
+	//returned values can then be used as such
+	//var feeding = setHungerTimes()
+	//feeding.breakfast.getUTCHours()
+
+	//if (currentTime == feeding.breakfast.getUTCHours()) {
+	//			j is hungry or something like this
+
+	//}
+	
+}
+
 ///////////////////////////////////////////////////////////////////////
