@@ -312,13 +312,13 @@ function getCurrentTime() {
 	
 	//CHeck the time against set meal times.  Set meal times are
 	//configued at server start up using runOnceAtStart()
-	if (time == mealTimes.breakfast) {
+	if (time.toTimeString() == mealTimes.breakfast.toTimeString()) {
 		toClient_JHungry()
 	}
-	if (time == mealTimes.lunch ) {
+	if (time.toTimeString() == mealTimes.lunch.toTimeString() ) {
 		toClient_JHungry()
 	}
-	if (time == mealTimes.dinner ) {
+	if (time.toTimeString() == mealTimes.dinner.toTimeString() ) {
 		toClient_JHungry()
 	}
 }
