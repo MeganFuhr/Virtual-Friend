@@ -362,7 +362,7 @@ function setHungerTimes() {
 
 	breakfast = breakfast.setUTCHours(12, getRandomMinute(),0)
 	lunch = lunch.setUTCHours(16, getRandomMinute(),0)
-	dinner = dinner.setUTCHours(10, getRandomMinute(),0)
+	dinner = dinner.setUTCHours(22, getRandomMinute(),0)
 
 	breakfast = new Date(breakfast)
 	lunch = new Date(lunch)
