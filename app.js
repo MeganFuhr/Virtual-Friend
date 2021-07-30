@@ -288,14 +288,14 @@ function checkIfSleepy(){
 	}
 ////////////////////////////////////////////////////////////////////
 
-///////////////////////////HUNGER////////////////////////////
+//////////////////////////////////HUNGER///////////////////////////////
 startHungerInterval()
 
 const mealTimes = runOnceAtStart()
 
-//check every minute if J is hungry
+/////////////////////check every 50 seconds if J is hungry/////////////////////////////
 function startHungerInterval() {
-	setInterval(checkIfHungry, 15000)
+	setInterval(checkIfHungry, 50000)
 }
 
 function getCurrentTime() {
@@ -304,42 +304,22 @@ function getCurrentTime() {
 	return time
 }
 
-  function checkIfHungry() {
-	
+function checkIfHungry() {
 	var time = getCurrentTime()
+	time = time.toTimeString()
 	console.log(`Time: ${time} and type of `+ typeof(time))
 	console.log(`Checking if J hungry at ${time}`)
-	
+
 	//CHeck the time against set meal times.  Set meal times are
 	//configued at server start up using runOnceAtStart()
-	if (time.toTimeString() == mealTimes.breakfast.toTimeString()) {
+	if (time == mealTimes.breakfast) {
 		toClient_JHungry()
 	}
-	if (time.toTimeString() == mealTimes.lunch.toTimeString() ) {
+	if (time == mealTimes.lunch ) {
 		toClient_JHungry()
 	}
-	if (time.toTimeString() == mealTimes.dinner.toTimeString() ) {
+	if (time== mealTimes.dinner ) {
 		toClient_JHungry()
-	}
-}
-
-function toClient_JHungry() {
-	console.log(`J is hungry by new method.`)
-
-	jIsHungry = true
-	
-	//tell all clients J is hungry
-	io.emit('state-hungry', {message: 'Server: J is hungry.', state:'true'})
-	
-	//update all clients with new gif array
-	updateClientGifs()
-
-	if(hungerMessageSentOnce === false){	
-		//disabled webhook messaging while testing		
-		if(jIsAsleep === false ){
-			hungerMessageSentOnce = true
-			sendDiscordMessage(hungerMessage, hungerGif, "Hungry")
-		}
 	}
 }
 
@@ -369,15 +349,34 @@ function setHungerTimes() {
 	dinner = new Date(dinner)
 
 	return {
-		breakfast:breakfast,
-		lunch:lunch,
-		dinner:dinner
+		breakfast:breakfast.toTimeString(),
+		lunch:lunch.toTimeString(),
+		dinner:dinner.toTimeString()
 	}	
+}
+/////////////////////Tell the client J is hungry/////////////////////////////
+function toClient_JHungry() {
+	console.log(`J is hungry by new method.`)
+
+	jIsHungry = true
+	
+	//tell all clients J is hungry
+	io.emit('state-hungry', {message: 'Server: J is hungry.', state:'true'})
+	
+	//update all clients with new gif array
+	updateClientGifs()
+
+	if(hungerMessageSentOnce === false){	
+		//disabled webhook messaging while testing		
+		if(jIsAsleep === false ){
+			hungerMessageSentOnce = true
+			sendDiscordMessage(hungerMessage, hungerGif, "Hungry")
+		}
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 //just outputting stuff I wanat to know about for testing
 getTime()
 
