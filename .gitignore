@@ -2,3 +2,4 @@ node_modules
 LocalOnly
 .env
 test.js
+.vscode
