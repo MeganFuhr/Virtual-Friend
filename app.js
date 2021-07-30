@@ -218,6 +218,34 @@ function sendDiscordMessage(message, gif, state) {
 		.then(res=>res.json()).then(console.log)
 }
 
+////////interval checker for all states. takes a function.////////
+function startStateCheckInterval(stateChecker) {
+	setInterval(stateChecker, 50000)
+}
+
+////////Gif Management////////
+function updateClientGifs() {
+	gifsToClient = []
+
+	if(jIsAsleep === true) {
+		gifsToClient.push(asleepGif)
+		io.emit('update-all-clients-gifs', {gifs:gifsToClient})
+		return
+	}
+	if(jIsSleepy === true) {
+		gifsToClient.push(sleepyGif)
+	}
+	if(jIsHungry === true) {
+		gifsToClient.push(hungerGif)
+	}
+	if(!jIsHungry && !jIsAsleep && !jIsSleepy) {
+		gifsToClient = []
+		gifsToClient.push(idleGif)
+	}
+
+	console.log(`SERVER: GifsToClient = ${chalk.red(gifsToClient)}`)
+	io.emit('update-all-clients-gifs', {gifs:gifsToClient})
+}
 ////////////////////////////////////////////////////////////////////
  
 
@@ -262,41 +290,12 @@ function checkIfSleepy(){
 	//send gifs
 	updateClientGifs()
 }
-
-	////////////////////////////Gif Management////////////////////////////////////////
-	function updateClientGifs() {
-		gifsToClient = []
-
-		if(jIsAsleep === true) {
-			gifsToClient.push(asleepGif)
-			io.emit('update-all-clients-gifs', {gifs:gifsToClient})
-			return
-		}
-		if(jIsSleepy === true) {
-			gifsToClient.push(sleepyGif)
-		}
-		if(jIsHungry === true) {
-			gifsToClient.push(hungerGif)
-		}
-		if(!jIsHungry && !jIsAsleep && !jIsSleepy) {
-			gifsToClient = []
-			gifsToClient.push(idleGif)
-		}
-
-		console.log(`SERVER: GifsToClient = ${chalk.red(gifsToClient)}`)
-		io.emit('update-all-clients-gifs', {gifs:gifsToClient})
-	}
 ////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////HUNGER///////////////////////////////
-startHungerInterval()
+startStateCheckInterval(checkIfHungry)
 
 const mealTimes = runOnceAtStart()
-
-/////////////////////check every 50 seconds if J is hungry/////////////////////////////
-function startHungerInterval() {
-	setInterval(checkIfHungry, 50000)
-}
 
 function getCurrentTime() {
 	var time = new Date()
