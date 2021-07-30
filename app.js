@@ -109,12 +109,7 @@ io.on('connection', function(socket) {
 			io.emit('update-all-clients-fed','Server: a-client-fed-j')
 
 			jIsHungry = false
-
-			//restart hunger interval
-			startHungerInterval()
 			hungerMessageSentOnce = false
-
-			console.log(`Resetting hungerInterval`)
 			return			
 		} 
 		//if j is not hungry and asleep, we cannot feed him because he is asleep.
@@ -130,6 +125,7 @@ io.on('connection', function(socket) {
 			//assuming last condition is jIsHungry = false, so we cannot feed him.
 			//Tell client j isn't hungry.
 			console.log(`J isn't hungry.`)
+			//tell single client who sent the request J is not hungry.
 			socket.emit('state-hungry', {message : "Server: J isn't hungry.", state : 'false'})
 			console.log(`jIsHungry: ${jIsHungry}`)
 			return
@@ -163,22 +159,23 @@ io.on('connection', function(socket) {
 })
 ////////////////////////////////////////////////////////////////////
 
-
+mealTimesSet = false
 discordHook = process.env.DISCORD_HOOK
 link = process.env.localhost || "https://virtual-j.herokuapp.com"
 
 //hunger
-hungerMessage = `J is hungry.  Please feed him. :pleading_face: [Virtual-j](${link})`
+hungerMessage = `!!!!LOCALHOST!!!! J is hungry.  Please feed him. :pleading_face: [Virtual-j](${link})`
 hungerMessageSentOnce = false
 var jIsHungry = false
 var hungerInterval
 
 //sleep
-sleepMessage = `J should be in bed. Please make him go to sleep. :sleeping: [Virtual-j](${link})`
+sleepMessage = `!!!!LOCALHOST!!!! J is sleepy. Please make him go to bed. :sleeping: [Virtual-j](${link})`
 sleepyMessageSentOnce = false
 jIsSleepy = false
 jIsAsleep = false
 var t = new Date()
+//below used just for testing output on server. can be deleted with finished.
 var currentTime = t.getUTCHours()
 
 //gifs
@@ -186,7 +183,7 @@ const hungerGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-HUNG
 const sleepyGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-SLEEPY-CHIBI-02.gif?raw=true"
 const asleepGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-ASLEEP-CHIBI-06.gif?raw=true"
 const eatingGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-EATING-CHIBI-02.gif?raw=true"
-const idleGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-IDlE-CHIBI-01.gif?raw=true"
+const idleGif 	= "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-IDlE-CHIBI-01.gif?raw=true"
 
 var gifsToClient = []
 
@@ -212,51 +209,15 @@ function sendDiscordMessage(message, gif, state) {
 		  }
 		]
 	  }
-	  
-	
-		fetch(discordHook + "?wait=true", {
-			"method":"POST", 
-			"headers": {
-				"content-type": "application/json"},
-			"body": JSON.stringify(msg)
-		})
-			.then(res=>res.json()).then(console.log)
+	fetch(discordHook + "?wait=true", {
+		"method":"POST", 
+		"headers": {
+			"content-type": "application/json"},
+		"body": JSON.stringify(msg)
+	})
+		.then(res=>res.json()).then(console.log)
 }
 
-///////////////////////////HUNGER////////////////////////////
-//start hunger interval at start of app.js
-startHungerInterval()
-
-//interval for hunger - 4 hours 14400000 milliseconds
-function startHungerInterval() {
-	clearInterval(hungerInterval)
-	hungerInterval = setInterval(checkIfHungry, 14400000)
-}
-
-//check jIsHungry variable
-function checkIfHungry(){
-	//runs after interval.
-	//J can be hungry even if he is asleep.
-	//If J is asleep, let's not send alerts to Discord
-
-	//set jIsHungry to true
-	jIsHungry = true
-	console.log(`4 hours have past and J is hungry.`)
-
-	//tell all clients J is hungry
-	io.emit('state-hungry', {message: 'Server: J is hungry.', state:'true'})
-	
-	//update all clients with new gif array
-	updateClientGifs()
-
-	if(hungerMessageSentOnce === false){	
-		//disabled webhook messaging while testing		
-		if(jIsAsleep === false ){
-			hungerMessageSentOnce = true
-			sendDiscordMessage(hungerMessage, hungerGif, "Hungry")
-		}
-	}
-}
 ////////////////////////////////////////////////////////////////////
  
 
@@ -275,7 +236,7 @@ function startSleepInterval() {
 function checkIfSleepy(){
 	var t = new Date()
 	var currentTime = t.getUTCHours()
-	if(currentTime > 0 && currentTime < 12){
+	if(currentTime > 0 && currentTime < 10){
 		console.log(`On the server: J is tired.  Please turn off the lights.`)
 		jIsSleepy = true
 
@@ -292,7 +253,7 @@ function checkIfSleepy(){
 	}
 	else {
 		// J should awake on his own and the sleepyMessageSentOnce should be false to reset it for the evening.
-		console.log(`${Date.now} --- J should be awake.`)
+		console.log(`J should be awake.`)
 		jIsSleepy = false
 		jIsAsleep = false
 		io.emit('state-sleepy', {message: "It's worktime.", state: 'false'})
@@ -325,9 +286,96 @@ function checkIfSleepy(){
 		console.log(`SERVER: GifsToClient = ${chalk.red(gifsToClient)}`)
 		io.emit('update-all-clients-gifs', {gifs:gifsToClient})
 	}
-
-	///////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
+
+///////////////////////////HUNGER////////////////////////////
+startHungerInterval()
+
+const mealTimes = runOnceAtStart()
+
+//check every minute if J is hungry
+function startHungerInterval() {
+	setInterval(checkIfHungry, 15000)
+}
+
+function getCurrentTime() {
+	var time = new Date()
+	time.setSeconds(0)
+	return time
+}
+
+  function checkIfHungry() {
+	
+	var time = getCurrentTime()
+	console.log(`Time: ${time} and type of `+ typeof(time))
+	console.log(`Checking if J hungry at ${time}`)
+	
+	//CHeck the time against set meal times.  Set meal times are
+	//configued at server start up using runOnceAtStart()
+	if (time.toTimeString() == mealTimes.breakfast.toTimeString()) {
+		toClient_JHungry()
+	}
+	if (time.toTimeString() == mealTimes.lunch.toTimeString() ) {
+		toClient_JHungry()
+	}
+	if (time.toTimeString() == mealTimes.dinner.toTimeString() ) {
+		toClient_JHungry()
+	}
+}
+
+function toClient_JHungry() {
+	console.log(`J is hungry by new method.`)
+
+	jIsHungry = true
+	
+	//tell all clients J is hungry
+	io.emit('state-hungry', {message: 'Server: J is hungry.', state:'true'})
+	
+	//update all clients with new gif array
+	updateClientGifs()
+
+	if(hungerMessageSentOnce === false){	
+		//disabled webhook messaging while testing		
+		if(jIsAsleep === false ){
+			hungerMessageSentOnce = true
+			sendDiscordMessage(hungerMessage, hungerGif, "Hungry")
+		}
+	}
+}
+
+/////////////////////Get Hunger times for the day/////////////////////////////
+function runOnceAtStart () {
+	if (mealTimesSet === false) {
+		mealTimesSet = true
+		return setHungerTimes()
+	}
+}
+
+function getRandomMinute() {
+	return Math.round(Math.random() * (60 - 1) + 1)
+}
+
+function setHungerTimes() {
+	var breakfast = new Date()
+	var lunch = new Date()
+	var dinner = new Date()
+
+	breakfast = breakfast.setUTCHours(12, getRandomMinute(),0)
+	lunch = lunch.setUTCHours(16, getRandomMinute(),0)
+	dinner = dinner.setUTCHours(22, getRandomMinute(),0)
+
+	breakfast = new Date(breakfast)
+	lunch = new Date(lunch)
+	dinner = new Date(dinner)
+
+	return {
+		breakfast:breakfast,
+		lunch:lunch,
+		dinner:dinner
+	}	
+}
+
+///////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////
 //just outputting stuff I wanat to know about for testing
@@ -343,11 +391,12 @@ function checkTime(){
     console.log(`ET: ${h.getHours()}`)
     console.log(`UTC: ${h.getUTCHours()}`)
 	console.log(`hungerMessageSentOnce: ${hungerMessageSentOnce}`)
-	console.log(`sleepyMessageSentOnce: ${sleepyMessageSentOnce}`)
+	//console.log(`sleepyMessageSentOnce: ${sleepyMessageSentOnce}`)
 	console.log(`jIsHungry: ${jIsHungry} and type of `+  typeof(jIsHungry))
-	console.log(`jIsSleepy: ${jIsSleepy} and type of ` + typeof(jIsSleepy))
-	console.log(`jIsAsleep: ${jIsAsleep} and type of ` + typeof(jIsAsleep))
-	console.log(`currentTime hours in UTC: ${currentTime}`)
+	//console.log(`jIsSleepy: ${jIsSleepy} and type of ` + typeof(jIsSleepy))
+	//console.log(`jIsAsleep: ${jIsAsleep} and type of ` + typeof(jIsAsleep))
 	console.log(`This is what the server is sending for Gifs: ${gifsToClient}`)
+	console.log(`Meal Times: ${mealTimes.breakfast} and type of `+ typeof(mealTimes.breakfast))
+	console.log(`Meal Times: ${mealTimes.lunch} and type of `+ typeof(mealTimes.lunch))
+	console.log(`Meal Times: ${mealTimes.dinner} and type of `+ typeof(mealTimes.dinner))
 }
-///////////////////////////////////////////////////////////////////////
