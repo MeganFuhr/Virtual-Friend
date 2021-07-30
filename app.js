@@ -251,16 +251,9 @@ function updateClientGifs() {
 
 
 ///////////////////////////SLEEP EVENTS////////////////////////////
-startSleepInterval()
-
-//check every minute if J is sleepy
-//every 61 minutes = 3660000
-function startSleepInterval() {
-	setInterval(checkIfSleepy, 15000)
-}
+startStateCheckInterval(checkIfSleepy)
 
 //check if J is sleepy
-//utc. 0 = 8pm ET, 10 6am et
 function checkIfSleepy(){
 	var t = new Date()
 	var currentTime = t.getUTCHours()
@@ -272,6 +265,8 @@ function checkIfSleepy(){
 		//no one has put J to sleep and the clients should be told until he is.
 		if(jIsAsleep === false) {
 			io.emit('state-sleepy', {message : "Server: J is tired.", state: 'true'})
+				//send gifs
+				updateClientGifs()
 		}
 		//send sleep discord message once and update client once.
 		if (sleepyMessageSentOnce === false) {	
@@ -281,14 +276,11 @@ function checkIfSleepy(){
 	}
 	else {
 		// J should awake on his own and the sleepyMessageSentOnce should be false to reset it for the evening.
-		console.log(`J should be awake.`)
 		jIsSleepy = false
 		jIsAsleep = false
 		io.emit('state-sleepy', {message: "It's worktime.", state: 'false'})
 		sleepyMessageSentOnce = false
 	}
-	//send gifs
-	updateClientGifs()
 }
 ////////////////////////////////////////////////////////////////////
 
