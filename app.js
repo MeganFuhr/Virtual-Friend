@@ -117,9 +117,11 @@ io.on("connection", function (socket) {
       console.log(`jIsHungry: ${jIsHungry} and jIsAsleep: ${jIsAsleep}`);
       //need to tell all clients J has been fed by updating the class on f
       io.emit("update-all-clients-fed", "Server: a-client-fed-j");
-      updateClientGifs();
+
       jIsHungry = false;
       hungerMessageSentOnce = false;
+
+      updateClientGifs();
       return;
     }
     //if j is not hungry and asleep, we cannot feed him because he is asleep.
@@ -163,7 +165,6 @@ io.on("connection", function (socket) {
     //if J is sleepy but not asleep, we can put him to sleep
     if (jIsSleepy === true && jIsAsleep === false) {
       console.log(`Client put J to sleep and returned: ${msg}`);
-      updateClientGifs();
       //need to tell all clients J has been fed by updating the class on f
       io.emit("update-all-clients-sleep", {
         message: "Server: a-client-sleep-j",
@@ -171,6 +172,7 @@ io.on("connection", function (socket) {
       });
       jIsSleepy = false;
       jIsAsleep = true;
+      updateClientGifs();
       return;
     } else {
       console.log(`J isn't sleepy.`);
