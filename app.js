@@ -74,7 +74,7 @@ app.get("*", function (req, res) {
 
 ////////////////////Socket.io///////////////////
 io.on("connection", function (socket) {
-  console.log("new connection made");
+  console.log("New Connection Made");
 
   updateClientGifs();
   ///////////////////////SET CLIENT STATE AT CONNECTION////////////////////////
@@ -117,7 +117,7 @@ io.on("connection", function (socket) {
       console.log(`jIsHungry: ${jIsHungry} and jIsAsleep: ${jIsAsleep}`);
       //need to tell all clients J has been fed by updating the class on f
       io.emit("update-all-clients-fed", "Server: a-client-fed-j");
-
+      updateClientGifs();
       jIsHungry = false;
       hungerMessageSentOnce = false;
       return;
@@ -146,7 +146,6 @@ io.on("connection", function (socket) {
       console.log(`jIsHungry: ${jIsHungry}`);
       return;
     }
-    updateClientGifs();
   });
 
   ///////////////////////////SLEEP EVENTS////////////////////////////
@@ -164,7 +163,7 @@ io.on("connection", function (socket) {
     //if J is sleepy but not asleep, we can put him to sleep
     if (jIsSleepy === true && jIsAsleep === false) {
       console.log(`Client put J to sleep and returned: ${msg}`);
-
+      updateClientGifs();
       //need to tell all clients J has been fed by updating the class on f
       io.emit("update-all-clients-sleep", {
         message: "Server: a-client-sleep-j",
@@ -181,7 +180,6 @@ io.on("connection", function (socket) {
       });
       return;
     }
-    updateClientGifs();
   });
 });
 ////////////////////////////////////////////////////////////////////
@@ -194,7 +192,6 @@ link = process.env.localhost || "https://virtual-j.herokuapp.com";
 hungerMessage = `J is hungry.  Please feed him. :pleading_face: [Virtual-j](${link})`;
 hungerMessageSentOnce = false;
 var jIsHungry = false;
-var hungerInterval;
 
 //sleep
 sleepMessage = `J is sleepy. Please make him go to bed. :sleeping: [Virtual-j](${link})`;
@@ -202,8 +199,6 @@ sleepyMessageSentOnce = false;
 jIsSleepy = false;
 jIsAsleep = false;
 var t = new Date();
-//below used just for testing output on server. can be deleted with finished.
-var currentTime = t.getUTCHours();
 
 //gifs
 const hungerGif =
