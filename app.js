@@ -79,22 +79,22 @@ io.on("connection", function (socket) {
   updateClientGifs();
   ///////////////////////SET CLIENT STATE AT CONNECTION////////////////////////
   if (jIsHungry === true) {
-    //changed to io.emit from socket.emit so every connection knows J is hungry
-    io.emit("state-hungry", {
+    //changed to io.sockets.emit from socket.emit so every connection knows J is hungry
+    io.sockets.emit("state-hungry", {
       message: "Server On Connection: j is hungry",
       state: "true",
     });
   }
   ///if j is sleep but not asleep.
   if (jIsSleepy === true && jIsAsleep === false) {
-    io.emit("state-sleepy", {
+    io.sockets.emit("state-sleepy", {
       message: "Server On Connection: J is sleepy",
       state: "true",
     });
   }
   //if j is asleep and a new connection is made, show him asleep but not sleepy
   if (jIsAsleep === true) {
-    io.emit("update-all-clients-sleep", {
+    io.sockets.emit("update-all-clients-sleep", {
       message: "Server On Connection: J is sleepy",
     });
   }
@@ -116,7 +116,7 @@ io.on("connection", function (socket) {
     if (jIsHungry === true && jIsAsleep === false) {
       console.log(`jIsHungry: ${jIsHungry} and jIsAsleep: ${jIsAsleep}`);
       //need to tell all clients J has been fed by updating the class on f
-      io.emit("update-all-clients-fed", "Server: a-client-fed-j");
+      io.sockets.emit("update-all-clients-fed", "Server: a-client-fed-j");
 
       jIsHungry = false;
       hungerMessageSentOnce = false;
@@ -156,7 +156,7 @@ io.on("connection", function (socket) {
     //If J is asleep, we cannot make him asleep again
     if (jIsAsleep === true) {
       console.log(`J is asleep and can't be put to sleep`);
-      io.emit("state-sleepy", {
+      socket.emit("state-sleepy", {
         message: "Server: J is already asleep.",
         state: "alreadyAsleep",
       });
@@ -166,7 +166,7 @@ io.on("connection", function (socket) {
     if (jIsSleepy === true && jIsAsleep === false) {
       console.log(`Client put J to sleep and returned: ${msg}`);
       //need to tell all clients J has been fed by updating the class on f
-      io.emit("update-all-clients-sleep", {
+      io.sockets.emit("update-all-clients-sleep", {
         message: "Server: a-client-sleep-j",
         state: "true",
       });
@@ -262,7 +262,7 @@ function updateClientGifs() {
 
   if (jIsAsleep === true) {
     gifsToClient.push(asleepGif);
-    io.emit("update-all-clients-gifs", { gifs: gifsToClient });
+    io.sockets.emit("update-all-clients-gifs", { gifs: gifsToClient });
     return;
   }
   if (jIsSleepy === true) {
@@ -277,7 +277,7 @@ function updateClientGifs() {
   }
 
   console.log(`SERVER: GifsToClient = ${chalk.red(gifsToClient)}`);
-  io.emit("update-all-clients-gifs", { gifs: gifsToClient });
+  io.sockets.emit("update-all-clients-gifs", { gifs: gifsToClient });
 }
 ////////////////////////////////////////////////////////////////////
 
@@ -295,7 +295,7 @@ function checkIfSleepy() {
     //update the client if they were already connected that J is sleepy.  If jIsAsleep = false,
     //no one has put J to sleep and the clients should be told until he is.
     if (jIsAsleep === false) {
-      io.emit("state-sleepy", {
+      io.sockets.emit("state-sleepy", {
         message: "Server: J is tired.",
         state: "true",
       });
@@ -311,7 +311,10 @@ function checkIfSleepy() {
     // J should awake on his own and the sleepyMessageSentOnce should be false to reset it for the evening.
     jIsSleepy = false;
     jIsAsleep = false;
-    io.emit("state-sleepy", { message: "It's worktime.", state: "false" });
+    io.sockets.emit("state-sleepy", {
+      message: "It's worktime.",
+      state: "false",
+    });
     sleepyMessageSentOnce = false;
   }
 }
@@ -385,7 +388,10 @@ function toClient_JHungry() {
   jIsHungry = true;
 
   //tell all clients J is hungry
-  io.emit("state-hungry", { message: "Server: J is hungry.", state: "true" });
+  io.sockets.emit("state-hungry", {
+    message: "Server: J is hungry.",
+    state: "true",
+  });
 
   //update all clients with new gif array
   updateClientGifs();
