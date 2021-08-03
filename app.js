@@ -281,7 +281,7 @@ function updateClientGifs() {
     gifsToClient = [];
     gifsToClient.push(idleGif);
   }
-  if ((jIsLazy = true)) {
+  if (jIsLazy === true) {
     gifsToClient.push(lazyGif);
   }
 
