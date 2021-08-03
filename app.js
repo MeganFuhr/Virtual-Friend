@@ -186,21 +186,25 @@ io.on("connection", function (socket) {
 });
 ////////////////////////////////////////////////////////////////////
 
-mealTimesSet = false;
+stateTimesSet = false;
 discordHook = process.env.DISCORD_HOOK;
 link = process.env.localhost || "https://virtual-j.herokuapp.com";
 
 //hunger
-hungerMessage = `J is hungry.  Please feed him. :pleading_face: [Virtual-j](${link})`;
+hungerMessage = `J is hungry.  Please feed him. :drooling_face: [Virtual-j](${link})`;
 hungerMessageSentOnce = false;
 var jIsHungry = false;
 
 //sleep
-sleepMessage = `J is sleepy. Please make him go to bed. :sleeping: [Virtual-j](${link})`;
+sleepMessage = `J is sleepy. Please make him go to bed. :yawning_face: [Virtual-j](${link})`;
 sleepyMessageSentOnce = false;
 jIsSleepy = false;
 jIsAsleep = false;
-var t = new Date();
+
+//lazy
+lazyMessage = `J is being lazy. Please make him exercise. :weary: [Virtual-j](${link})`;
+lazyMessageSentOnce = false;
+jIsLazy = false;
 
 //gifs
 const hungerGif =
@@ -213,6 +217,8 @@ const eatingGif =
   "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-EATING-CHIBI-02.gif?raw=true";
 const idleGif =
   "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-IDlE-CHIBI-01.gif?raw=true";
+const lazyGif =
+  "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-LAZY-CHIBI-01.gif?raw=true";
 
 var gifsToClient = [];
 
@@ -271,9 +277,12 @@ function updateClientGifs() {
   if (jIsHungry === true) {
     gifsToClient.push(hungerGif);
   }
-  if (!jIsHungry && !jIsAsleep && !jIsSleepy) {
+  if (!jIsHungry && !jIsAsleep && !jIsSleepy && !jIsLazy) {
     gifsToClient = [];
     gifsToClient.push(idleGif);
+  }
+  if ((jIsLazy = true)) {
+    gifsToClient.push(lazyGif);
   }
 
   console.log(`SERVER: GifsToClient = ${chalk.red(gifsToClient)}`);
@@ -320,10 +329,45 @@ function checkIfSleepy() {
 }
 ////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////LAZY///////////////////////////////
+startStateCheckInterval(checkIfLazy);
+
+function checkIfLazy() {
+  var time = getCurrentTime();
+  time = time.toTimeString();
+
+  if (time == stateTimes.lazy) {
+    toClient_JLazy();
+  }
+}
+
+function toClient_JLazy() {
+  console.log(`J is lazy.`);
+
+  jIsLazy = true;
+
+  //tell all clients J is lazy
+  io.sockets.emit("state-lazy", {
+    message: "Server: J is lazy.",
+    state: "true",
+  });
+
+  //update all clients with new gif array
+  updateClientGifs();
+
+  if (lazyMessageSentOnce === false) {
+    //disabled webhook messaging while testing
+    if (jIsAsleep === false) {
+      lazyMessageSentOnce = true;
+      sendDiscordMessage(lazyMessage, lazyGif, "Lazy");
+    }
+  }
+}
+
 //////////////////////////////////HUNGER///////////////////////////////
 startStateCheckInterval(checkIfHungry);
 
-const mealTimes = runOnceAtStart();
+const stateTimes = runOnceAtStart();
 
 function getCurrentTime() {
   var time = new Date();
@@ -334,27 +378,24 @@ function getCurrentTime() {
 function checkIfHungry() {
   var time = getCurrentTime();
   time = time.toTimeString();
-  console.log(`Time: ${time} and type of ` + typeof time);
-  console.log(`Checking if J hungry at ${time}`);
 
-  //CHeck the time against set meal times.  Set meal times are
-  //configued at server start up using runOnceAtStart()
-  if (time == mealTimes.breakfast) {
+  //CHeck the time against set state times.
+  if (time == stateTimes.breakfast) {
     toClient_JHungry();
   }
-  if (time == mealTimes.lunch) {
+  if (time == stateTimes.lunch) {
     toClient_JHungry();
   }
-  if (time == mealTimes.dinner) {
+  if (time == stateTimes.dinner) {
     toClient_JHungry();
   }
 }
 
-/////////////////////Get Hunger times for the day/////////////////////////////
+/////////////////////Get state times for the day/////////////////////////////
 function runOnceAtStart() {
-  if (mealTimesSet === false) {
-    mealTimesSet = true;
-    return setHungerTimes();
+  if (stateTimesSet === false) {
+    stateTimesSet = true;
+    return setStateTimes();
   }
 }
 
@@ -362,23 +403,27 @@ function getRandomMinute() {
   return Math.round(Math.random() * (60 - 1) + 1);
 }
 
-function setHungerTimes() {
+function setStateTimes() {
   var breakfast = new Date();
   var lunch = new Date();
   var dinner = new Date();
+  var lazy = new Date();
 
   breakfast = breakfast.setUTCHours(12, getRandomMinute(), 0);
   lunch = lunch.setUTCHours(16, getRandomMinute(), 0);
   dinner = dinner.setUTCHours(22, getRandomMinute(), 0);
+  lazy = lazy.setUTCHours(12, getRandomMinute(), 0);
 
   breakfast = new Date(breakfast);
   lunch = new Date(lunch);
   dinner = new Date(dinner);
+  lazy = new Date(lazy);
 
   return {
     breakfast: breakfast.toTimeString(),
     lunch: lunch.toTimeString(),
     dinner: dinner.toTimeString(),
+    lazy: lazy.toTimeString(),
   };
 }
 /////////////////////Tell the client J is hungry/////////////////////////////
@@ -420,19 +465,25 @@ function checkTime() {
   console.log(`ET: ${h.getHours()}`);
   console.log(`UTC: ${h.getUTCHours()}`);
   console.log(`hungerMessageSentOnce: ${hungerMessageSentOnce}`);
-  //console.log(`sleepyMessageSentOnce: ${sleepyMessageSentOnce}`)
+  console.log(`sleepyMessageSentOnce: ${sleepyMessageSentOnce}`);
   console.log(`jIsHungry: ${jIsHungry} and type of ` + typeof jIsHungry);
-  //console.log(`jIsSleepy: ${jIsSleepy} and type of ` + typeof(jIsSleepy))
-  //console.log(`jIsAsleep: ${jIsAsleep} and type of ` + typeof(jIsAsleep))
+  console.log(`jIsSleepy: ${jIsSleepy} and type of ` + typeof jIsSleepy);
+  console.log(`jIsAsleep: ${jIsAsleep} and type of ` + typeof jIsAsleep);
   console.log(`This is what the server is sending for Gifs: ${gifsToClient}`);
   console.log(
-    `Meal Times: ${mealTimes.breakfast} and type of ` +
-      typeof mealTimes.breakfast
+    `Meal Times: ${stateTimes.breakfast} and type of ` +
+      typeof stateTimes.breakfast
   );
   console.log(
-    `Meal Times: ${mealTimes.lunch} and type of ` + typeof mealTimes.lunch
+    `Breakfast Time: ${stateTimes.lunch} and type of ` + typeof stateTimes.lunch
   );
   console.log(
-    `Meal Times: ${mealTimes.dinner} and type of ` + typeof mealTimes.dinner
+    `Lunch Time: ${stateTimes.dinner} and type of ` + typeof stateTimes.dinner
+  );
+  console.log(
+    `Dinner Time: ${stateTimes.dinner} and type of ` + typeof stateTimes.dinner
+  );
+  console.log(
+    `Lazy Time: ${stateTimes.lazy} and type of ` + typeof stateTimes.lazy
   );
 }
