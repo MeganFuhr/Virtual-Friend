@@ -471,14 +471,14 @@ function checkTime() {
   console.log(`jIsAsleep: ${jIsAsleep} and type of ` + typeof jIsAsleep);
   console.log(`This is what the server is sending for Gifs: ${gifsToClient}`);
   console.log(
-    `Meal Times: ${stateTimes.breakfast} and type of ` +
+    `Breakfast Time: ${stateTimes.breakfast} and type of ` +
       typeof stateTimes.breakfast
   );
   console.log(
-    `Breakfast Time: ${stateTimes.lunch} and type of ` + typeof stateTimes.lunch
+    `Lunch Time: ${stateTimes.lunch} and type of ` + typeof stateTimes.lunch
   );
   console.log(
-    `Lunch Time: ${stateTimes.dinner} and type of ` + typeof stateTimes.dinner
+    `Dinner Time: ${stateTimes.dinner} and type of ` + typeof stateTimes.dinner
   );
   console.log(
     `Lazy Time: ${stateTimes.lazy} and type of ` + typeof stateTimes.lazy
