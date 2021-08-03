@@ -412,7 +412,7 @@ function setStateTimes() {
   breakfast = breakfast.setUTCHours(12, getRandomMinute(), 0);
   lunch = lunch.setUTCHours(16, getRandomMinute(), 0);
   dinner = dinner.setUTCHours(22, getRandomMinute(), 0);
-  lazy = lazy.setUTCHours(12, getRandomMinute(), 0);
+  lazy = lazy.setUTCHours(21, getRandomMinute(), 0);
 
   breakfast = new Date(breakfast);
   lunch = new Date(lunch);
@@ -479,9 +479,6 @@ function checkTime() {
   );
   console.log(
     `Lunch Time: ${stateTimes.dinner} and type of ` + typeof stateTimes.dinner
-  );
-  console.log(
-    `Dinner Time: ${stateTimes.dinner} and type of ` + typeof stateTimes.dinner
   );
   console.log(
     `Lazy Time: ${stateTimes.lazy} and type of ` + typeof stateTimes.lazy
