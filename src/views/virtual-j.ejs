@@ -252,6 +252,12 @@
       document.getElementById('state_hungry').classList.add('state_invisible')
 
     })
+    socket.on('update-all-clients-exercise', function(evt) {
+      //update classes to show J is tired
+      console.log(evt.message + ' - server told all a client J is no longery lazy')
+      document.getElementById('state_lazy').classList.remove('state_visible')
+      document.getElementById('state_lazy').classList.add('state_invisible')  
+    })
 
     //receive event from the server that a client put J to sleep
     socket.on('update-all-clients-sleep', function(evt) {

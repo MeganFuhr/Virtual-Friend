@@ -155,7 +155,7 @@ io.on("connection", function (socket) {
     if (jIsLazy === true && jIsAsleep === true) {
       socket.emit("jIsAsleep", {
         message: "Server: J is asleep and cannot exercise.",
-        state: "true",
+        state: "false",
       });
       return;
     }
@@ -168,9 +168,15 @@ io.on("connection", function (socket) {
     }
     if (jIsLazy === true && jIsAsleep === false) {
       socket.emit("state-lazy", {
-        message: "Server: J needs to exercise.",
+        message: "Server: J has been exercised.",
         state: "true",
       });
+      jIsLazy = false;
+      lazyMessageSentOnce = false;
+      io.sockets.emit(
+        "update-all-clients-exercise",
+        "Server: a-client-exercised-j"
+      );
       return;
     }
   });
