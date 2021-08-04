@@ -167,10 +167,6 @@ io.on("connection", function (socket) {
       return;
     }
     if (jIsLazy === true && jIsAsleep === false) {
-      socket.emit("state-lazy", {
-        message: "Server: J has been exercised.",
-        state: "true",
-      });
       jIsLazy = false;
       lazyMessageSentOnce = false;
       io.sockets.emit(
@@ -448,8 +444,8 @@ function setStateTimes() {
 
   //20, 23 for prod
   //
-  var lazy_hours_min = 18;
-  var lazy_hours_max = 19;
+  var lazy_hours_min = 19;
+  var lazy_hours_max = 20;
 
   breakfast = breakfast.setUTCHours(
     12,
