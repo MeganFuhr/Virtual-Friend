@@ -399,8 +399,11 @@ function runOnceAtStart() {
   }
 }
 
-function getRandomMinute() {
-  return Math.round(Math.random() * (60 - 1) + 1);
+function getRandomNumber(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1) + min);
+  //return Math.round(Math.random() * (max - min) + min);
 }
 
 function setStateTimes() {
@@ -409,10 +412,24 @@ function setStateTimes() {
   var dinner = new Date();
   var lazy = new Date();
 
-  breakfast = breakfast.setUTCHours(12, getRandomMinute(), 0);
-  lunch = lunch.setUTCHours(16, getRandomMinute(), 0);
-  dinner = dinner.setUTCHours(22, getRandomMinute(), 0);
-  lazy = lazy.setUTCHours(21, getRandomMinute(), 0);
+  var minutes_min = 1;
+  var minutes_max = 59;
+
+  var lazy_hours_min = 20;
+  var lazy_hours_max = 23;
+
+  breakfast = breakfast.setUTCHours(
+    12,
+    getRandomNumber(minutes_min, minutes_max),
+    0
+  );
+  lunch = lunch.setUTCHours(16, getRandomNumber(minutes_min, minutes_max), 0);
+  dinner = dinner.setUTCHours(22, getRandomNumber(minutes_min, minutes_max), 0);
+  lazy = lazy.setUTCHours(
+    getRandomNumber(lazy_hours_min, lazy_hours_max),
+    getRandomNumber(minutes_min, minutes_max),
+    0
+  );
 
   breakfast = new Date(breakfast);
   lunch = new Date(lunch);
