@@ -149,6 +149,31 @@ io.on("connection", function (socket) {
       return;
     }
   });
+  ///////////////////////////LAZY EVENTS////////////////////////////
+  socket.on("action-lazy", function (msg) {
+    //can't feed J if he is a asleep
+    if (jIsLazy === true && jIsAsleep === true) {
+      socket.emit("jIsAsleep", {
+        message: "Server: J is asleep and cannot exercise.",
+        state: "true",
+      });
+      return;
+    }
+    if (jIsLazy === false && jIsAsleep === false) {
+      socket.emit("state-lazy", {
+        message: "Server: J isn't be lazy.",
+        state: "false",
+      });
+      return;
+    }
+    if (jIsLazy === true && jIsAsleep === false) {
+      socket.emit("state-lazy", {
+        message: "Server: J needs to exercise.",
+        state: "true",
+      });
+      return;
+    }
+  });
 
   ///////////////////////////SLEEP EVENTS////////////////////////////
   //if a client put J to sleep, change variable to false
@@ -415,8 +440,10 @@ function setStateTimes() {
   var minutes_min = 1;
   var minutes_max = 59;
 
-  var lazy_hours_min = 20;
-  var lazy_hours_max = 23;
+  //20, 23 for prod
+  //
+  var lazy_hours_min = 11;
+  var lazy_hours_max = 12;
 
   breakfast = breakfast.setUTCHours(
     12,

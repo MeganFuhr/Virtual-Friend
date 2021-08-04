@@ -137,6 +137,9 @@
     const asleepGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-ASLEEP-CHIBI-06.gif?raw=true"
     const eatingGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-EATING-CHIBI-02.gif?raw=true"
     const   idleGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-IDlE-CHIBI-01.gif?raw=true"
+    const exerciseGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-EXERCISE-CHIBI-02.gif?raw=true"
+    const lazyGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-LAZY-CHIBI-01.gif?raw=true"
+
 
     //Gif array
     let gifCollection = []
@@ -180,7 +183,20 @@
         document.getElementById('state_hungry').classList.remove('state_invisible')
       }
     })
-
+    /////////////////////////Lazy///////////////////////
+    socket.on('state-lazy', function(evt) {
+      //j is not lazy
+      if (evt.state === 'false') {
+        document.getElementById('state_lazy').classList.remove('state_visible')
+        document.getElementById('state_lazy').classList.add('state_invisible')
+        serverMessage(evt) 
+      }
+      //j is lazy
+      else {
+        document.getElementById('state_lazy').classList.add('state_visible')
+        document.getElementById('state_lazy').classList.remove('state_invisible')
+      }
+    })
 
     /////////////////////////SLEEP///////////////////////
       socket.on('state-sleepy', function(evt) {
@@ -292,7 +308,7 @@
     }
 
     function Select_Action() {
-      //On feed, tell server you are feeding J
+      //Client Action - Feed J
       if(document.getElementById('action_food').classList.contains('action_visible')) {
         //only feed J if he is hungry
         if (document.getElementById('state_hungry').classList.contains('state_visible')){
@@ -310,6 +326,21 @@
           }
         }     
       }
+      //Client Action - Exercise J
+      if(document.getElementById('action_exercise').classList.contains('action_visible')) {
+        if (document.getElementById('action_exercise').classList.contains('state_visible')){
+
+          //remove sleepyGif
+          gifCollection = [lazyGif]
+        
+          //swap gif for asleep gif
+          swapGif(exerciseGif)
+
+          //tell the server
+          socket.emit('action-lazy', false)
+        }
+      }
+      //Client Action - Put J to sleep
       if(document.getElementById('action_sleep').classList.contains('action_visible')) {
         if (document.getElementById('state_sleepy').classList.contains('state_visible')){
 
