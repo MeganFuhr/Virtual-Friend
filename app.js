@@ -173,6 +173,7 @@ io.on("connection", function (socket) {
         "update-all-clients-exercise",
         "Server: a-client-exercised-j"
       );
+      updateClientGifs();
       return;
     }
   });
@@ -444,8 +445,8 @@ function setStateTimes() {
 
   //20, 23 for prod
   //
-  var lazy_hours_min = 19;
-  var lazy_hours_max = 20;
+  var lazy_hours_min = 20;
+  var lazy_hours_max = 21;
 
   breakfast = breakfast.setUTCHours(
     12,
