@@ -318,56 +318,52 @@ function updateClientGifs() {
 }
 ////////////////////////////////////////////////////////////////////
 
-///////////////////////////SLEEP EVENTS////////////////////////////
-startStateCheckInterval(checkIfSleepy);
-
-//check if J is sleepy
-function checkIfSleepy() {
-  var t = new Date();
-  var currentTime = t.getUTCHours();
-  if (currentTime > 0 && currentTime < 10) {
-    console.log(`On the server: J is tired.  Please turn off the lights.`);
-    jIsSleepy = true;
-
-    //update the client if they were already connected that J is sleepy.  If jIsAsleep = false,
-    //no one has put J to sleep and the clients should be told until he is.
-    if (jIsAsleep === false) {
-      io.sockets.emit("state-sleepy", {
-        message: "Server: J is tired.",
-        state: "true",
-      });
-      //send gifs
-      updateClientGifs();
-    }
-    //send sleep discord message once and update client once.
-    if (sleepyMessageSentOnce === false) {
-      sendDiscordMessage(sleepMessage, sleepyGif, "Sleepy");
-      sleepyMessageSentOnce = true;
-    }
-  } else {
-    // J should awake on his own and the sleepyMessageSentOnce should be false to reset it for the evening.
-    jIsSleepy = false;
-    jIsAsleep = false;
-    io.sockets.emit("state-sleepy", {
-      message: "It's worktime.",
-      state: "false",
-    });
-    sleepyMessageSentOnce = false;
-  }
-}
-////////////////////////////////////////////////////////////////////
-
 //////////////////////////////////LAZY///////////////////////////////
-startStateCheckInterval(checkIfLazy);
+function toClient_JHungry() {
+  console.log(`J is hungry by new method.`);
 
-function checkIfLazy() {
-  var time = getCurrentTime();
-  time = time.toTimeString();
+  jIsHungry = true;
 
-  if (time == stateTimes.lazy) {
-    toClient_JLazy();
+  //tell all clients J is hungry
+  io.sockets.emit("state-hungry", {
+    message: "Server: J is hungry.",
+    state: "true",
+  });
+
+  //update all clients with new gif array
+  updateClientGifs();
+
+  if (hungerMessageSentOnce === false) {
+    //disabled webhook messaging while testing
+    if (jIsAsleep === false) {
+      hungerMessageSentOnce = true;
+      sendDiscordMessage(hungerMessage, hungerGif, "Hungry");
+    }
   }
 }
+
+///////////////////////////SLEEP EVENTS////////////////////////////
+function toClient_JSleepy() {
+  console.log(`On the server: J is tired.  Please turn off the lights.`);
+  jIsSleepy = true;
+
+  //update the client if they were already connected that J is sleepy.  If jIsAsleep = false,
+  //no one has put J to sleep and the clients should be told until he is.
+  if (jIsAsleep === false) {
+    io.sockets.emit("state-sleepy", {
+      message: "Server: J is tired.",
+      state: "true",
+    });
+    //send gifs
+    updateClientGifs();
+  }
+  //send sleep discord message once and update client once.
+  if (sleepyMessageSentOnce === false) {
+    sendDiscordMessage(sleepMessage, sleepyGif, "Sleepy");
+    sleepyMessageSentOnce = true;
+  }
+}
+//////////////////////////////////LAZY///////////////////////////////
 
 function toClient_JLazy() {
   console.log(`J is lazy.`);
@@ -392,8 +388,8 @@ function toClient_JLazy() {
   }
 }
 
-//////////////////////////////////HUNGER///////////////////////////////
-startStateCheckInterval(checkIfHungry);
+/////////////////////Get state times for the day/////////////////////////////
+startStateCheckInterval(checkState);
 
 const stateTimes = runOnceAtStart();
 
@@ -403,8 +399,9 @@ function getCurrentTime() {
   return time;
 }
 
-function checkIfHungry() {
+function checkState() {
   var time = getCurrentTime();
+  var currentHour = time.getUTCHours();
   time = time.toTimeString();
 
   //CHeck the time against set state times.
@@ -417,9 +414,23 @@ function checkIfHungry() {
   if (time == stateTimes.dinner) {
     toClient_JHungry();
   }
+  if (time == stateTimes.lazy) {
+    toClient_JLazy();
+  }
+  if (currentHour > 0 && currentHour < 10) {
+    toClient_JSleepy();
+  } else {
+    // J should awake on his own and the sleepyMessageSentOnce should be false to reset it for the evening.
+    jIsSleepy = false;
+    jIsAsleep = false;
+    io.sockets.emit("state-sleepy", {
+      message: "It's worktime.",
+      state: "false",
+    });
+    sleepyMessageSentOnce = false;
+  }
 }
 
-/////////////////////Get state times for the day/////////////////////////////
 function runOnceAtStart() {
   if (stateTimesSet === false) {
     stateTimesSet = true;
@@ -473,33 +484,10 @@ function setStateTimes() {
     lazy: lazy.toTimeString(),
   };
 }
-/////////////////////Tell the client J is hungry/////////////////////////////
-function toClient_JHungry() {
-  console.log(`J is hungry by new method.`);
-
-  jIsHungry = true;
-
-  //tell all clients J is hungry
-  io.sockets.emit("state-hungry", {
-    message: "Server: J is hungry.",
-    state: "true",
-  });
-
-  //update all clients with new gif array
-  updateClientGifs();
-
-  if (hungerMessageSentOnce === false) {
-    //disabled webhook messaging while testing
-    if (jIsAsleep === false) {
-      hungerMessageSentOnce = true;
-      sendDiscordMessage(hungerMessage, hungerGif, "Hungry");
-    }
-  }
-}
 
 ///////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
-//just outputting stuff I wanat to know about for testing
+//just outputting stuff I wanat to know about for testing//
 getTime();
 
 function getTime() {
