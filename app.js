@@ -592,4 +592,7 @@ function checkTime() {
   console.log(
     `Lazy Time: ${stateTimes.lazy} and type of ` + typeof stateTimes.lazy
   );
+  console.log(
+    `Bored Time: ${stateTimes.bored} and type of ` + typeof stateTimes.bored
+  );
 }
