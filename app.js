@@ -98,6 +98,20 @@ io.on("connection", function (socket) {
       message: "Server On Connection: J is sleepy",
     });
   }
+  //if j is lazy, send new connections he is lazy
+  if (jIsLazy === true) {
+    io.sockets.emit("state-lazy", {
+      message: "Server On Connection: J is lazy",
+      state: "true",
+    });
+  }
+  //if j is bored, send new connections he is bored
+  if (jIsBored === true) {
+    io.sockets.emit("state-bored", {
+      message: "Server On Connection: J is bored",
+      state: "true",
+    });
+  }
 
   ////////////////////////////////////////////////////////////////////
 
