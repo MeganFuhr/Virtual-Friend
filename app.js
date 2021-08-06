@@ -279,7 +279,6 @@ const idleGif =
   "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-IDlE-CHIBI-01.gif?raw=true";
 const lazyGif =
   "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-LAZY-CHIBI-01.gif?raw=true";
-
 const boredGif =
   "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-BORED-CHIBI-01.gif?raw=true";
 
@@ -519,11 +518,13 @@ function setStateTimes() {
   var minutes_min = 1;
   var minutes_max = 59;
 
-  var lazy_hours_min = 20;
-  var lazy_hours_max = 22;
+  //prod 20/22
+  var lazy_hours_min = 12;
+  var lazy_hours_max = 14;
 
-  var bored_hours_min = 21;
-  var bored_hours_max = 23;
+  //prod 21/23
+  var bored_hours_min = 12;
+  var bored_hours_max = 14;
 
   breakfast = breakfast.setUTCHours(
     12,
