@@ -533,12 +533,12 @@ function setStateTimes() {
   var minutes_max = 59;
 
   //prod 20/22
-  var lazy_hours_min = 12;
+  var lazy_hours_min = 14;
   var lazy_hours_max = 14;
 
   //prod 21/23
-  var bored_hours_min = 12;
-  var bored_hours_max = 14;
+  var bored_hours_min = 14;
+  var bored_hours_max = 15;
 
   breakfast = breakfast.setUTCHours(
     12,
