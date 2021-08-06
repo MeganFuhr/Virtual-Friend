@@ -149,9 +149,36 @@ io.on("connection", function (socket) {
       return;
     }
   });
+
+  ///////////////////////////BORED EVENTS////////////////////////////
+  socket.on("action-play", function (msg) {
+    //can't feed J if he is a asleep
+    if (jIsBored === true && jIsAsleep === true) {
+      socket.emit("jIsAsleep", {
+        message: "Server: J is asleep and cannot play.",
+        state: "false",
+      });
+      return;
+    }
+    if (jIsBored === false && jIsAsleep === false) {
+      socket.emit("state-bored", {
+        message: "Server: J isn't bored.",
+        state: "false",
+      });
+      return;
+    }
+    if (jIsBored === true && jIsAsleep === false) {
+      jIsBored = false;
+      boredMessageSentOnce = false;
+      io.sockets.emit("update-all-clients-play", "Server: a-client-play-j");
+      updateClientGifs();
+      return;
+    }
+  });
+
   ///////////////////////////LAZY EVENTS////////////////////////////
   socket.on("action-lazy", function (msg) {
-    //can't feed J if he is a asleep
+    //can't make J exercise if he is asleep
     if (jIsLazy === true && jIsAsleep === true) {
       socket.emit("jIsAsleep", {
         message: "Server: J is asleep and cannot exercise.",
@@ -234,6 +261,11 @@ lazyMessage = `J is being lazy. Please make him exercise. :weary: [Virtual-j](${
 lazyMessageSentOnce = false;
 jIsLazy = false;
 
+//bored
+boredMessage = `J is bored. Please play games with him. :expressionless: [Virtual-j](${link})`;
+boredMessageSentOnce = false;
+jIsBored = false;
+
 //gifs
 const hungerGif =
   "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-HUNGRY-CHIBI-02.gif?raw=true";
@@ -247,6 +279,9 @@ const idleGif =
   "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-IDlE-CHIBI-01.gif?raw=true";
 const lazyGif =
   "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-LAZY-CHIBI-01.gif?raw=true";
+
+const boredGif =
+  "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-BORED-CHIBI-01.gif?raw=true";
 
 var gifsToClient = [];
 
@@ -305,18 +340,45 @@ function updateClientGifs() {
   if (jIsHungry === true) {
     gifsToClient.push(hungerGif);
   }
-  if (!jIsHungry && !jIsAsleep && !jIsSleepy && !jIsLazy) {
-    gifsToClient = [];
-    gifsToClient.push(idleGif);
+  if (jIsBored === true) {
+    gifsToClient.push(boredGif);
   }
   if (jIsLazy === true) {
     gifsToClient.push(lazyGif);
   }
-
+  if (!jIsHungry && !jIsAsleep && !jIsSleepy && !jIsLazy && !jIsBored) {
+    gifsToClient = [];
+    gifsToClient.push(idleGif);
+  }
   console.log(`SERVER: GifsToClient = ${chalk.red(gifsToClient)}`);
   io.sockets.emit("update-all-clients-gifs", { gifs: gifsToClient });
 }
 ////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////BORED///////////////////////////////
+
+function toClient_JBored() {
+  console.log(`J is bored.`);
+
+  jIsBored = true;
+
+  //tell all clients J is lazy
+  io.sockets.emit("state-bored", {
+    message: "Server: J is bored.",
+    state: "true",
+  });
+
+  //update all clients with new gif array
+  updateClientGifs();
+
+  if (boredMessageSentOnce === false) {
+    //disabled webhook messaging while testing
+    if (jIsAsleep === false) {
+      boredMessageSentOnce = true;
+      sendDiscordMessage(boredMessage, boredGif, "Bored");
+    }
+  }
+}
 
 //////////////////////////////////LAZY///////////////////////////////
 function toClient_JHungry() {
@@ -417,6 +479,9 @@ function checkState() {
   if (time == stateTimes.lazy) {
     toClient_JLazy();
   }
+  if (time == stateTimes.bored) {
+    toClient_JBored();
+  }
   if (currentHour > 0 && currentHour < 10) {
     toClient_JSleepy();
   } else {
@@ -442,7 +507,6 @@ function getRandomNumber(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1) + min);
-  //return Math.round(Math.random() * (max - min) + min);
 }
 
 function setStateTimes() {
@@ -450,14 +514,16 @@ function setStateTimes() {
   var lunch = new Date();
   var dinner = new Date();
   var lazy = new Date();
+  var bored = new Date();
 
   var minutes_min = 1;
   var minutes_max = 59;
 
-  //20, 23 for prod
-  //
   var lazy_hours_min = 20;
-  var lazy_hours_max = 21;
+  var lazy_hours_max = 22;
+
+  var bored_hours_min = 21;
+  var bored_hours_max = 23;
 
   breakfast = breakfast.setUTCHours(
     12,
@@ -471,17 +537,24 @@ function setStateTimes() {
     getRandomNumber(minutes_min, minutes_max),
     0
   );
+  bored = bored.setUTCHours(
+    getRandomNumber(bored_hours_min, bored_hours_max),
+    getRandomNumber(minutes_min, minutes_max),
+    0
+  );
 
   breakfast = new Date(breakfast);
   lunch = new Date(lunch);
   dinner = new Date(dinner);
   lazy = new Date(lazy);
+  bored = new Date(bored);
 
   return {
     breakfast: breakfast.toTimeString(),
     lunch: lunch.toTimeString(),
     dinner: dinner.toTimeString(),
     lazy: lazy.toTimeString(),
+    bored: bored.toTimeString(),
   };
 }
 
