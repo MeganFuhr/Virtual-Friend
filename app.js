@@ -98,6 +98,20 @@ io.on("connection", function (socket) {
       message: "Server On Connection: J is sleepy",
     });
   }
+  //if j is lazy, send new connections he is lazy
+  if (jIsLazy === true) {
+    io.sockets.emit("state-lazy", {
+      message: "Server On Connection: J is lazy",
+      state: "true",
+    });
+  }
+  //if j is bored, send new connections he is bored
+  if (jIsBored === true) {
+    io.sockets.emit("state-bored", {
+      message: "Server On Connection: J is bored",
+      state: "true",
+    });
+  }
 
   ////////////////////////////////////////////////////////////////////
 
@@ -149,9 +163,36 @@ io.on("connection", function (socket) {
       return;
     }
   });
+
+  ///////////////////////////BORED EVENTS////////////////////////////
+  socket.on("action-play", function (msg) {
+    //can't feed J if he is a asleep
+    if (jIsBored === true && jIsAsleep === true) {
+      socket.emit("jIsAsleep", {
+        message: "Server: J is asleep and cannot play.",
+        state: "false",
+      });
+      return;
+    }
+    if (jIsBored === false && jIsAsleep === false) {
+      socket.emit("state-bored", {
+        message: "Server: J isn't bored.",
+        state: "false",
+      });
+      return;
+    }
+    if (jIsBored === true && jIsAsleep === false) {
+      jIsBored = false;
+      boredMessageSentOnce = false;
+      io.sockets.emit("update-all-clients-play", "Server: a-client-play-j");
+      updateClientGifs();
+      return;
+    }
+  });
+
   ///////////////////////////LAZY EVENTS////////////////////////////
   socket.on("action-lazy", function (msg) {
-    //can't feed J if he is a asleep
+    //can't make J exercise if he is asleep
     if (jIsLazy === true && jIsAsleep === true) {
       socket.emit("jIsAsleep", {
         message: "Server: J is asleep and cannot exercise.",
@@ -234,6 +275,11 @@ lazyMessage = `J is being lazy. Please make him exercise. :weary: [Virtual-j](${
 lazyMessageSentOnce = false;
 jIsLazy = false;
 
+//bored
+boredMessage = `J is bored. Please play games with him. :expressionless: [Virtual-j](${link})`;
+boredMessageSentOnce = false;
+jIsBored = false;
+
 //gifs
 const hungerGif =
   "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-HUNGRY-CHIBI-02.gif?raw=true";
@@ -247,6 +293,8 @@ const idleGif =
   "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-IDlE-CHIBI-01.gif?raw=true";
 const lazyGif =
   "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-LAZY-CHIBI-01.gif?raw=true";
+const boredGif =
+  "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-BORED-CHIBI-01.gif?raw=true";
 
 var gifsToClient = [];
 
@@ -305,69 +353,92 @@ function updateClientGifs() {
   if (jIsHungry === true) {
     gifsToClient.push(hungerGif);
   }
-  if (!jIsHungry && !jIsAsleep && !jIsSleepy && !jIsLazy) {
-    gifsToClient = [];
-    gifsToClient.push(idleGif);
+  if (jIsBored === true) {
+    gifsToClient.push(boredGif);
   }
   if (jIsLazy === true) {
     gifsToClient.push(lazyGif);
   }
-
+  if (!jIsHungry && !jIsAsleep && !jIsSleepy && !jIsLazy && !jIsBored) {
+    gifsToClient = [];
+    gifsToClient.push(idleGif);
+  }
   console.log(`SERVER: GifsToClient = ${chalk.red(gifsToClient)}`);
   io.sockets.emit("update-all-clients-gifs", { gifs: gifsToClient });
 }
 ////////////////////////////////////////////////////////////////////
 
-///////////////////////////SLEEP EVENTS////////////////////////////
-startStateCheckInterval(checkIfSleepy);
+//////////////////////////////////BORED///////////////////////////////
 
-//check if J is sleepy
-function checkIfSleepy() {
-  var t = new Date();
-  var currentTime = t.getUTCHours();
-  if (currentTime > 0 && currentTime < 10) {
-    console.log(`On the server: J is tired.  Please turn off the lights.`);
-    jIsSleepy = true;
+function toClient_JBored() {
+  console.log(`J is bored.`);
 
-    //update the client if they were already connected that J is sleepy.  If jIsAsleep = false,
-    //no one has put J to sleep and the clients should be told until he is.
+  jIsBored = true;
+
+  //tell all clients J is lazy
+  io.sockets.emit("state-bored", {
+    message: "Server: J is bored.",
+    state: "true",
+  });
+
+  //update all clients with new gif array
+  updateClientGifs();
+
+  if (boredMessageSentOnce === false) {
+    //disabled webhook messaging while testing
     if (jIsAsleep === false) {
-      io.sockets.emit("state-sleepy", {
-        message: "Server: J is tired.",
-        state: "true",
-      });
-      //send gifs
-      updateClientGifs();
+      boredMessageSentOnce = true;
+      sendDiscordMessage(boredMessage, boredGif, "Bored");
     }
-    //send sleep discord message once and update client once.
-    if (sleepyMessageSentOnce === false) {
-      sendDiscordMessage(sleepMessage, sleepyGif, "Sleepy");
-      sleepyMessageSentOnce = true;
-    }
-  } else {
-    // J should awake on his own and the sleepyMessageSentOnce should be false to reset it for the evening.
-    jIsSleepy = false;
-    jIsAsleep = false;
-    io.sockets.emit("state-sleepy", {
-      message: "It's worktime.",
-      state: "false",
-    });
-    sleepyMessageSentOnce = false;
   }
 }
-////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////LAZY///////////////////////////////
-startStateCheckInterval(checkIfLazy);
+function toClient_JHungry() {
+  console.log(`J is hungry by new method.`);
 
-function checkIfLazy() {
-  var time = getCurrentTime();
-  time = time.toTimeString();
+  jIsHungry = true;
 
-  if (time == stateTimes.lazy) {
-    toClient_JLazy();
+  //tell all clients J is hungry
+  io.sockets.emit("state-hungry", {
+    message: "Server: J is hungry.",
+    state: "true",
+  });
+
+  //update all clients with new gif array
+  updateClientGifs();
+
+  if (hungerMessageSentOnce === false) {
+    //disabled webhook messaging while testing
+    if (jIsAsleep === false) {
+      hungerMessageSentOnce = true;
+      sendDiscordMessage(hungerMessage, hungerGif, "Hungry");
+    }
   }
 }
+
+///////////////////////////SLEEP EVENTS////////////////////////////
+function toClient_JSleepy() {
+  console.log(`On the server: J is tired.  Please turn off the lights.`);
+  jIsSleepy = true;
+
+  //update the client if they were already connected that J is sleepy.  If jIsAsleep = false,
+  //no one has put J to sleep and the clients should be told until he is.
+  if (jIsAsleep === false) {
+    io.sockets.emit("state-sleepy", {
+      message: "Server: J is tired.",
+      state: "true",
+    });
+    //send gifs
+    updateClientGifs();
+  }
+  //send sleep discord message once and update client once.
+  if (sleepyMessageSentOnce === false) {
+    sendDiscordMessage(sleepMessage, sleepyGif, "Sleepy");
+    sleepyMessageSentOnce = true;
+  }
+}
+//////////////////////////////////LAZY///////////////////////////////
 
 function toClient_JLazy() {
   console.log(`J is lazy.`);
@@ -392,8 +463,8 @@ function toClient_JLazy() {
   }
 }
 
-//////////////////////////////////HUNGER///////////////////////////////
-startStateCheckInterval(checkIfHungry);
+/////////////////////Get state times for the day/////////////////////////////
+startStateCheckInterval(checkState);
 
 const stateTimes = runOnceAtStart();
 
@@ -403,8 +474,9 @@ function getCurrentTime() {
   return time;
 }
 
-function checkIfHungry() {
+function checkState() {
   var time = getCurrentTime();
+  var currentHour = time.getUTCHours();
   time = time.toTimeString();
 
   //CHeck the time against set state times.
@@ -417,9 +489,26 @@ function checkIfHungry() {
   if (time == stateTimes.dinner) {
     toClient_JHungry();
   }
+  if (time == stateTimes.lazy) {
+    toClient_JLazy();
+  }
+  if (time == stateTimes.bored) {
+    toClient_JBored();
+  }
+  if (currentHour > 0 && currentHour < 10) {
+    toClient_JSleepy();
+  } else {
+    // J should awake on his own and the sleepyMessageSentOnce should be false to reset it for the evening.
+    jIsSleepy = false;
+    jIsAsleep = false;
+    io.sockets.emit("state-sleepy", {
+      message: "It's worktime.",
+      state: "false",
+    });
+    sleepyMessageSentOnce = false;
+  }
 }
 
-/////////////////////Get state times for the day/////////////////////////////
 function runOnceAtStart() {
   if (stateTimesSet === false) {
     stateTimesSet = true;
@@ -431,7 +520,6 @@ function getRandomNumber(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1) + min);
-  //return Math.round(Math.random() * (max - min) + min);
 }
 
 function setStateTimes() {
@@ -439,14 +527,18 @@ function setStateTimes() {
   var lunch = new Date();
   var dinner = new Date();
   var lazy = new Date();
+  var bored = new Date();
 
   var minutes_min = 1;
   var minutes_max = 59;
 
-  //20, 23 for prod
-  //
-  var lazy_hours_min = 20;
-  var lazy_hours_max = 21;
+  //prod 20/22
+  var lazy_hours_min = 18;
+  var lazy_hours_max = 20;
+
+  //prod 21/23
+  var bored_hours_min = 18;
+  var bored_hours_max = 20;
 
   breakfast = breakfast.setUTCHours(
     12,
@@ -460,46 +552,30 @@ function setStateTimes() {
     getRandomNumber(minutes_min, minutes_max),
     0
   );
+  bored = bored.setUTCHours(
+    getRandomNumber(bored_hours_min, bored_hours_max),
+    getRandomNumber(minutes_min, minutes_max),
+    0
+  );
 
   breakfast = new Date(breakfast);
   lunch = new Date(lunch);
   dinner = new Date(dinner);
   lazy = new Date(lazy);
+  bored = new Date(bored);
 
   return {
     breakfast: breakfast.toTimeString(),
     lunch: lunch.toTimeString(),
     dinner: dinner.toTimeString(),
     lazy: lazy.toTimeString(),
+    bored: bored.toTimeString(),
   };
 }
-/////////////////////Tell the client J is hungry/////////////////////////////
-function toClient_JHungry() {
-  console.log(`J is hungry by new method.`);
-
-  jIsHungry = true;
-
-  //tell all clients J is hungry
-  io.sockets.emit("state-hungry", {
-    message: "Server: J is hungry.",
-    state: "true",
-  });
-
-  //update all clients with new gif array
-  updateClientGifs();
-
-  if (hungerMessageSentOnce === false) {
-    //disabled webhook messaging while testing
-    if (jIsAsleep === false) {
-      hungerMessageSentOnce = true;
-      sendDiscordMessage(hungerMessage, hungerGif, "Hungry");
-    }
-  }
-}
 
 ///////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
-//just outputting stuff I wanat to know about for testing
+//just outputting stuff I wanat to know about for testing//
 getTime();
 
 function getTime() {
@@ -529,5 +605,8 @@ function checkTime() {
   );
   console.log(
     `Lazy Time: ${stateTimes.lazy} and type of ` + typeof stateTimes.lazy
+  );
+  console.log(
+    `Bored Time: ${stateTimes.bored} and type of ` + typeof stateTimes.bored
   );
 }
