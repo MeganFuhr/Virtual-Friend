@@ -13,6 +13,7 @@ const cookieParser = require("cookie-parser");
 const http = require("http");
 const socketio = require("socket.io");
 const fetch = require("node-fetch");
+const MongoStore = require("connect-mongo");
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -39,7 +40,15 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
+    store: MongoStore.create({
+      collectionName: process.env.MONGO_URI,
+      mongoUrl: process.env.MONGO_URI,
+      collectionName: process.env.SESSION_COLLECTION,
+      dbName: process.env.DBNAME,
+      ttl: 14 * 24 * 60 * 60,
+      autoRemove: "native",
+    }),
   })
 );
 require("./src/config/passport.js")(app);
