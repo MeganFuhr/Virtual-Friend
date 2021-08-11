@@ -92,39 +92,42 @@ body {
 }
 
 .server_message_invisible {
+  max-width: var(--max-width);
+  position: relative;
   visibility: hidden;
   opacity: 0;
-  font-size: 37.5px;
-  fill: #3d33cd;
-  font-family: Ubuntu;
+  font-family: Arial, Helvetica, sans-serif;
   width: 50%;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  margin-top: 20px;
   transition: visibility 0s 2s, opacity 2s linear;
 }
 
 .server_message_visible {
-  font-size: 37.5px;
-  fill: #3d33cd;
-  font-family: Ubuntu;
-  width: 50%;
+  max-width: var(--max-width);
+  position: relative;
+  font-size: 2rem;
+  fill: #cd3373;
+  font-family: Arial, Helvetica, sans-serif;
+
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  margin-top: 20px;
 
-  animation: signup-response 0.5s 1;
-  -webkit-animation: signup-response 0.5s 1;
+  background: rgb(255, 255, 255);
+  border-radius: 10px;
+
+  animation: fadeIn 0.5s 1;
+  -webkit-animation: fadeIn 0.5s 1;
   animation-fill-mode: forwards;
 
   animation-delay: 2s;
-  -webkit-animation-delay: 1s; /* Safari and Chrome */
+  -webkit-animation-delay: 0.5s; /* Safari and Chrome */
   -webkit-animation-fill-mode: forwards;
 }
 
-@keyframes signup-response {
+@keyframes fadeIn {
   from {
     opacity: 1;
   }
@@ -133,7 +136,7 @@ body {
   }
 }
 
-@-webkit-keyframes signup-response {
+@-webkit-keyframes fadeIn {
   from {
     opacity: 1;
   }

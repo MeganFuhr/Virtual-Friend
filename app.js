@@ -511,7 +511,7 @@ function checkState() {
     jIsSleepy = false;
     jIsAsleep = false;
     io.sockets.emit("state-sleepy", {
-      message: "It's worktime.",
+      //message: "It's worktime.",
       state: "false",
     });
     sleepyMessageSentOnce = false;
