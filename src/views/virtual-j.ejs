@@ -118,9 +118,9 @@
     
     ///////////////////////////////////////VARIABLES////////////////////////////////////////////////////
     //prod
-    const socket = io("https://virtual-j.herokuapp.com")
+    //const socket = io("https://virtual-j.herokuapp.com")
     //testing
-    //const socket = io("http://localhost:4000/")
+    const socket = io("http://localhost:4000/")
     
     //used for Toggle_Action() counter
     i=0
@@ -175,6 +175,7 @@
       if (evt.state === 'false') {
         document.getElementById('state_hungry').classList.remove('state_visible')
         document.getElementById('state_hungry').classList.add('state_invisible')
+        console.log("J Isn't hungry.")
         serverMessage(evt) 
       }
       //j is hungry
@@ -338,6 +339,7 @@
         //only feed J if he is hungry
         if (document.getElementById('state_hungry').classList.contains('state_visible')){
           if(clientJAsleep === true){
+
             return
           }else {
             //remove hungerGif
@@ -393,6 +395,11 @@
           socket.emit('action-sleep', false)
         }
       }
+    //not hungry
+    if(document.getElementById('action_food').classList.contains('action_visible')) {
+      console.log("J isn't hungry in select_action()")
+      serverMessage({message: "not hungry"})
+    }
    }
     
 
@@ -441,6 +448,7 @@
       }
     }
     //https://stackoverflow.com/questions/10643426/how-to-add-a-tooltip-to-an-svg-graphic
+    //for hovering over buttons - show tool tip
     function showTooltip(evt, text) {
         let tooltip = document.getElementById("tooltip");
         tooltip.innerHTML = text;
