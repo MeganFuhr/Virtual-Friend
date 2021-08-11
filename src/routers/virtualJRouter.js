@@ -1,6 +1,7 @@
 const express = require("express");
 
 const virtualJRouter = express.Router();
+
 virtualJRouter.use((req, res, next) => {
   if (req.user) {
     next();
