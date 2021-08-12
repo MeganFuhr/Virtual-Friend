@@ -1,36 +1,45 @@
-<html>
+<html lang="en">
   <body>
     <head>
-      <link rel="stylesheet" href="/css/signin.css">
+      <link rel="stylesheet" href="/css/signin.css" />
     </head>
-  <div class="login-box">
-    <h2>Register</h2>
-    <% if ( duplicate_email_error ) { %>
+    <div class="login-box">
+      <h2>Register</h2>
+      <% if ( duplicate_email_error ) { %>
       <div class="flash-error"><%= duplicate_email_error %></div>
-  <% } %>
-  <br>
-    <form id="submit" autocomplete="off" action="/auth/register" method="POST">
-      <div class="user-box">
-        <input type="text" name="email" required="">
-        <label>Email</label>
+      <% } %>
+      <br />
+      <form
+        id="submit"
+        autocomplete="off"
+        action="/auth/register"
+        method="POST"
+      >
+        <div class="user-box">
+          <input type="text" name="email" required="" />
+          <label>Email</label>
+        </div>
+        <div class="user-box">
+          <input type="password" name="password" required="" />
+          <label>Password</label>
+        </div>
+        <a
+          href="#"
+          aria-label="Click link to submit registration."
+          onclick="document.getElementById('submit').submit();"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          Submit
+        </a>
+      </form>
+      <div class="user-box" style="color: white">
+        <br />
+        <br />
+        Return to login <a href="/" style="color: #964c89">Login</a>
       </div>
-      <div class="user-box">
-        <input type="password" name="password" required="">
-        <label>Password</label>
-      </div>
-      <a href="#" onclick="document.getElementById('submit').submit();">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        Submit
-      </a> 
-    </form>
-        <div class="user-box" style="color: white;">
-          <br>
-          <br>
-      Return to login <a href="/" style="color:#964c89;">Login</a>
     </div>
-  </div>
   </body>
 </html>
