@@ -1,36 +1,46 @@
 <html>
   <body>
     <head>
-      <link rel="stylesheet" href="/css/signin.css">
+      <link rel="stylesheet" href="/css/signin.css" />
     </head>
-  <div class="login-box">
-    <h2>Login</h2>
-    <% if ( messages.error ) { %>
+    <div class="login-box">
+      <h2>Login</h2>
+      <% if ( messages.error ) { %>
       <div class="flash-error"><%= messages.error %></div>
-  <% } %>
-  <br>
-    <form id="submit" autocomplete="off" action="/auth/signin" method="POST">
-      <div class="user-box">
-        <input type="text" name="email" required="">
-        <label>Email</label>
+      <% } %>
+      <br />
+      <form id="submit" autocomplete="off" action="/auth/signin" method="POST">
+        <div class="user-box">
+          <input type="text" name="email" required="" />
+          <label>Email</label>
+        </div>
+        <div class="user-box">
+          <input type="password" name="password" required="" />
+          <label>Password</label>
+        </div>
+        <a
+          href="#"
+          aria-label="Click to login."
+          onclick="document.getElementById('submit').submit();"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          Submit
+        </a>
+      </form>
+      <div class="user-box" style="color: white">
+        <br />
+        <br />
+        Not signed up?
+        <a
+          href="/auth/register"
+          aria-label="Follow this link to register."
+          style="color: #964c89"
+          >Register Here</a
+        >
       </div>
-      <div class="user-box">
-        <input type="password" name="password" required="">
-        <label>Password</label>
-      </div>
-      <a href="#"  onclick="document.getElementById('submit').submit();">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        Submit
-      </a> 
-    </form>
-        <div class="user-box" style="color: white;">
-          <br>
-          <br>
-      Not signed up? <a href="/auth/register" style="color:#964c89;">Register Here</a>
     </div>
-  </div>
   </body>
 </html>
