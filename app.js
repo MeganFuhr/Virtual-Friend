@@ -296,8 +296,6 @@ const sleepyGif =
   "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-SLEEPY-CHIBI-02.gif?raw=true";
 const asleepGif =
   "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-ASLEEP-CHIBI-06.gif?raw=true";
-const eatingGif =
-  "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-EATING-CHIBI-02.gif?raw=true";
 const idleGif =
   "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-IDlE-CHIBI-01.gif?raw=true";
 const lazyGif =
@@ -428,6 +426,9 @@ function toClient_JHungry() {
 
 ///////////////////////////SLEEP EVENTS////////////////////////////
 function toClient_JSleepy() {
+  var time = getCurrentTime();
+  var currentHour = time.getUTCHours();
+
   console.log(`On the server: J is tired.  Please turn off the lights.`);
   jIsSleepy = true;
 
@@ -442,9 +443,13 @@ function toClient_JSleepy() {
     updateClientGifs();
   }
   //send sleep discord message once and update client once.
+  //I want to send this message ONLY at 9pm. Dynos restart
+  //and I want "quiet hours" with no messaging.
   if (sleepyMessageSentOnce === false) {
-    sendDiscordMessage(sleepMessage, sleepyGif, "Sleepy");
-    sleepyMessageSentOnce = true;
+    if (currentHour == 1) {
+      sendDiscordMessage(sleepMessage, sleepyGif, "Sleepy");
+      sleepyMessageSentOnce = true;
+    }
   }
 }
 //////////////////////////////////LAZY///////////////////////////////
