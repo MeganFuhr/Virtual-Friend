@@ -85,6 +85,11 @@ app.get("*", function (req, res) {
 io.on("connection", function (socket) {
   console.log("New Connection Made");
 
+  ///////////////////////////RAVE Initiated////////////////////////////
+  socket.on("update-gifs", function (msg) {
+    updateClientGifs();
+  });
+
   updateClientGifs();
   ///////////////////////SET CLIENT STATE AT CONNECTION////////////////////////
   if (jIsHungry === true) {
@@ -262,6 +267,7 @@ io.on("connection", function (socket) {
     }
   });
 });
+
 ////////////////////////////////////////////////////////////////////
 
 stateTimesSet = false;

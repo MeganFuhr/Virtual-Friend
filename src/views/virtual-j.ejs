@@ -27,7 +27,7 @@
     
     <use id="buttons_1" class="button" data-name="buttons 1" x="232" y="778" onclick="Toggle_Action()" xlink:href="#image" onmousemove="showTooltip(evt, 'Toggle actions');" onmouseout="hideTooltip();"/>
     <use id="buttons_2" class="button" data-name="buttons 2" x="422" y="845" onclick="Select_Action()" xlink:href="#image"  onmousemove="showTooltip(evt, 'Select action');" onmouseout="hideTooltip();"/>
-    <use id="buttons_3" class="button" data-name="buttons 3" x="612" y="778" xlink:href="#image" onmousemove="showTooltip(evt, 'Mystery button');" onmouseout="hideTooltip();"/>
+    <use id="buttons_3" class="button" data-name="buttons 3" x="612" y="778" onclick="Mystery_Action()" xlink:href="#image" onmousemove="showTooltip(evt, 'Mystery button');" onmouseout="hideTooltip();"/>
     
     <image id="action_food" class="action_invisible" x="271" y="661" width="50" height="51" xlink:href="data:img/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAzCAYAAADVY1sUAAAFH0lEQVRogdWaa4xdUxTHfzPDqFcF4xmjihlU2mpL0U5HWo80oh/QUaFKNTJEopEiKlVvoR4RIVIjU8SrlUy09SoJKar9QCpiSo1GlGo9ipHqQ2WurMl/y3Jy7z33zrnPf3Jyz9rPtfZee+211rnE4GagxzX5FrgtrlMl4iogBZwl3ux9WyUyukeG8nqgFThQ9BPaic+BEcAs4FegDuhTmxrR24E1wG8lkiErztDqD/TZAYwqJcM1Gcr3BSYDg4DzgcuAR4BPgZeAP4BrgL2AMcCNwErVNQD3aZxFQG1kruic6cqzlYX3GmnDZ8BDuQg7RLsSmPsQ2OXqm1T/oCubk3BH830+ysT8cB3qPjEdBv7dvduu7Na7/Y5OM05tmrJCola7nsp02I2xzcD+wN86/IfpvRs4GTgA+BE4SEZjn8gYpmJ7ZlHfpOiTIHvnM84grfytotfIOgVY3QJHP1Bi1Xoj046Y2b1ahz6llUUmuFZlthL3OhN9tmjbiXap4VNF3JEa8dEj9UqLMxOu0FbguCIJkFGqdLBVH+t2xDAeuBtYCjwOLJf5PSdiYnfLTP9VSkHyxTe6Mwz3S8iSXnzFwMESZHMlMFOXoO8OCWOHfCewqoB8lQXhkjyl2gU51d3ux1cAP4lwhTO906tYjn5c4oTZBFxeATwNGEfrNg8Cza1SOf6H9yXMUaWYLIn5jaJBrvxEhQFGj5QHvbyA8xQNbcB7Mb7XdkWYQ4vFRBLPdIKYO030WmCZfrcoRjG1mqRsTL3amYd8u94tnD4XGCYv2gReB7wDvAn8k1C+WNzkVrtDwVUcbOd+UZ9PgC9y2MXZxWC+GZivYN9PuEUxcyfwGrBRkWRKYfIr8qQDFrq+i9KoW7NzSO1ZDRxaCAEagcUR5k2Y1+XSf5lhRe2Af+XoFS4cDju6SsbAzHaLcmYenWrXC5yURIiLHSMW3k6JEfgu7ZC1f17xip2TLufGjFH7W7KoVac7v7NVZvHNIQMRYqYb+MIIw9cDzwDPifnWSN/HnNqFMHm6G29EpJ2FApcC8xS6BrUMKnmDyrrzFaLVpX8OV9mENOcj+jzqxmhzDAUdP8+VhexHj+jBru91btzhKgseg8+fZUW9O6zhVvaH70VgKnCivN1JSkpsUn2fU8EpKvvOTRgczI9FD80QoE12KhXU7CeVHZOLIC+rcZvoh0V/LXufDdc6gYPTGA72s67fCyqbI/pJ0bMiY7er/F3Rp4v+IE6IwWq4VPRY0W/lsgKCuT3r1S+Y1iWim1y7YNECbLV704z3tNpNjCzCEN8o5LVGyfxNFb1V1mK+6B6tVtzFZxP8oEPZrDyxJet+Vv0yGYleqeIJWqQufaYYpntmvRbEzs6f6tslwxKyM6/KQ1gRJr8oYQ6r3I+p/n/ZOkskTHNfo3zanjx9shonGC4zmXL1vk022u90dCzTpjuBcdrZ/sLv82C0ktAh/vtza8H3mVZlQhwpvjcEjdnPXX7VhLfFd4vneYEK26tEkPCVbG20ok4VO8vDV95YLX5Hpus4V5WVnvkYLT5XZmu0y5m2SkW3eDw2G3/B97+nQoUY54K0WGxT4/pcGpcYIVZpzGXaGWrcUWFCBFdqcT6dNqhTNPIrFxqUGkrps3jOaHI+zfgyC9Go7/mpgWb6L3DCzMv3w3yBMMPxcEe2IeO82hbFASF7sUT2e6NMdSG/oQezb/+wsM/jdiZMpQxXKiuTCGa9LCb3/0Mp1WP/EzsilnvgXzxnJ5JF0T8cAAAAAElFTkSuQmCC"/>
     <image id="action_exercise" class="action_invisible" x="376" y="669" width="57" height="37" xlink:href="data:img/png;base64,iVBORw0KGgoAAAANSUhEUgAAADkAAAAlCAYAAAD4DEFlAAAFC0lEQVRogc2Za4hVVRTHf3NrdGxsjEkq7TVFWfRQk9ACe0FlD4yC0Iog+lJElEn5CHoTJX1J6U3TQNBAQVJKBWUPCWoSemAvmpoyg9Ca3mnXUufGvvwX7Nntc84+994G/7DvPnedtfdZa5291l5rn70YG3QANwNLgNnAJuDnMXr2mKATGARqQTtlrAW5BXgf+DzSHH1pibmuATYAHwKLgVek3HPAacCt+v8DcB2wHtgI3AVUSsp9PTCQIfcHwN3GuCJi5VhbkfDQvoyxXwR8T2fwfVRCwaWJcj+JLnYAM4CpkTYd+E187TkPnS+eTRozDVgn2tqAd7HH65btkcCroj0jI/wNDAHXRp7VLt4RYG6G3CcCv4iv/vNNgdU2iG9SDk+/eM73aJNFGwh47xF9oUdzwama8TZWBeMnif5jitzmA3sXMNsbHMnhqar/zKP9pH5cwNumfodH22lWB24A9tHbGAZu1Mow5MnxH7lTHb2t4P5RwMG6vkhL0LWLRfs9Y1yHd+2UmgBsAx6W0T41nwLObECu+v2iN1gEN361FDM8FBkzE5ij5VOE7cH9v5qUsbSS4TJ5GThXPr0G2KUl4lt4CrAAeEfXwwXPCBOU8ep35siRi1Ql7cG+lduloNvojy0Y76LoMmARcJvne2Ww1eM1OZIytlQl/1Df51m0R/1LCeN7peRJ+l/mTZhBlnk+boEwy9dHoaySVzc4x3L1b6svkzObQc5Qi8mVi1QlJ6u/1NsqXPJwn+czBud/VylaOt/s1lbwK7CyhHIG2wFWKrlAUfh5T66WKGmhfrVH+0pKhtvQHcDxAe1b4CxlMWVhRn1LebCPCSlzpe6Tu9Xv69EOUx8GEQsKLhgdqutBKWowwbd5tD8z5jtIfbdHMzl2k4Bm98k8DHr3DtDyNXSp39+jm+AVjzZblQbeUm0IznLfFQz8OGLhaaI9EdDXZeSfjTYXzS+IyFRTAp4HV9XUUt+k5ZgXekstazuwyDkk3mGF/P08nu3KZLq8wFVTrlvRG3Zv/0DgdWCzfNqSDPNFP/fNRKqSdlQR2xN3Bf/Nz49OnDsL5wCvAeepxVCUPdWRquRE9c96SrmAcLan1FwtYQs2Lrt5Q0l2I7Cy7hOdHIRyXxYEwlw06pPHiPao/m/M8Ln1KqLLYqHG35QxruU+aaG609sipqo3P7kdmOX5qLPyPGUpzgAnqNa8AjgumH9VztLrjtA6A7lyUXYL8ffVMDVbGznmWKI38aCi7vfAyZF510SUNGPFUsBSB17N7JP2oCJrunTsVKV7rtR6Ucbwx30ZGWfuUVQYF6IZJbeo7yngQwFrgRKESxLnty1nSwFfEpzFvi7gGYgcZFVES8lHXQZzOnBICbne0/wzI/fsIGtr5F5sjvqPK1mO0CYcth5NVotUHI+J3ldC+BRcrnk3Z/CO9wzsglhM7sO1CupKPpWYbvVGHjZOJZS7f2eLFJzvPXNGDt8DiXK/0KaU636lbLHSpaoSZ3lwzmKYpfObDi3rPh3Tu7TtH10XYbrKs3mqRdEnhMcLxt2rQ7SuyL2qyrNFCc9Pgiu73s2wZAp8/mpwQL3HYY6CWE1O358gYEWVTK+2laE9WUHDm1JyYhr7KIwkpGqlUfZTWQqs4J1SclynNv6kVK0M/g8l7cS7aO8NYTlxWLo1jVYef1yp9M027/6SS88+Crli+RF9RG31/ts0LCtqVWu0Dh0N4F/GkI//BMSNggAAAABJRU5ErkJggg=="/>
@@ -120,9 +120,9 @@
     
     ///////////////////////////////////////VARIABLES////////////////////////////////////////////////////
     //prod
-    const socket = io("https://virtual-j.herokuapp.com")
+    //const socket = io("https://virtual-j.herokuapp.com")
     //testing
-    //const socket = io("http://localhost:4000/")
+    const socket = io("http://localhost:4000/")
     
     //used for Toggle_Action() counter
     i=0
@@ -142,7 +142,8 @@
     const exerciseGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-EXERCISE-CHIBI-02.gif?raw=true"
     const lazyGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-LAZY-CHIBI-01.gif?raw=true"
     const boredGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-BORED-CHIBI-01.gif?raw=true";
-    const playGif = "	https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-PLAY-CHIBI-01.gif?raw=true";
+    const playGif = "https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-PLAY-CHIBI-01.gif?raw=true";
+    const raveGif = "	https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/J-RAVE-CHIBI-01.gif?raw=true"
     //Gif array
     let gifCollection = []
 
@@ -473,6 +474,17 @@
     function hideTooltip() {
       var tooltip = document.getElementById("tooltip");
       tooltip.style.display = "none";
+    }
+
+    function Mystery_Action() {
+        //remove all gifs but rave
+        gifCollection = [raveGif]
+        
+        //swap gif for asleep gif
+        swapGif(raveGif)
+
+        //tell server to resent gifs
+        socket.emit('update-gifs', false)
     }
     </script>
     </main>
