@@ -95,34 +95,34 @@ io.on("connection", function (socket) {
   if (jIsHungry === true) {
     //changed to io.sockets.emit from socket.emit so every connection knows J is hungry
     io.sockets.emit("state-hungry", {
-      message: "Server On Connection: j is hungry",
+      message: "",
       state: "true",
     });
   }
   ///if j is sleep but not asleep.
   if (jIsSleepy === true && jIsAsleep === false) {
     io.sockets.emit("state-sleepy", {
-      message: "Server On Connection: J is sleepy",
+      message: "",
       state: "true",
     });
   }
   //if j is asleep and a new connection is made, show him asleep but not sleepy
   if (jIsAsleep === true) {
     io.sockets.emit("update-all-clients-sleep", {
-      message: "Server On Connection: J is sleepy",
+      message: "",
     });
   }
   //if j is lazy, send new connections he is lazy
   if (jIsLazy === true) {
     io.sockets.emit("state-lazy", {
-      message: "Server On Connection: J is lazy",
+      message: "",
       state: "true",
     });
   }
   //if j is bored, send new connections he is bored
   if (jIsBored === true) {
     io.sockets.emit("state-bored", {
-      message: "Server On Connection: J is bored",
+      message: "",
       state: "true",
     });
   }
@@ -134,7 +134,7 @@ io.on("connection", function (socket) {
     //can't feed J if he is a asleep
     if (jIsHungry === true && jIsAsleep === true) {
       socket.emit("jIsAsleep", {
-        message: "Server: J is asleep and cannot eat.",
+        message: "",
         state: "true",
       });
       console.log(`jIsHungry: ${jIsHungry} and jIsAsleep: ${jIsAsleep}`);
@@ -158,7 +158,7 @@ io.on("connection", function (socket) {
       //Tell client j isn't hungry.
       console.log(`J isn't hungry.`);
       socket.emit("state-hungry", {
-        message: "Server: J is asleep.",
+        message: "",
         state: "false",
       });
       console.log(`jIsHungry: ${jIsHungry}`);
@@ -170,7 +170,7 @@ io.on("connection", function (socket) {
       console.log(`J isn't hungry.`);
       //tell single client who sent the request J is not hungry.
       socket.emit("state-hungry", {
-        message: "Server: J isn't hungry.",
+        message: "",
         state: "false",
       });
       console.log(`jIsHungry: ${jIsHungry}`);
@@ -183,14 +183,14 @@ io.on("connection", function (socket) {
     //can't feed J if he is a asleep
     if (jIsBored === true && jIsAsleep === true) {
       socket.emit("jIsAsleep", {
-        message: "Server: J is asleep and cannot play.",
+        message: "",
         state: "false",
       });
       return;
     }
     if (jIsBored === false && jIsAsleep === false) {
       socket.emit("state-bored", {
-        message: "Server: J isn't bored.",
+        message: "",
         state: "false",
       });
       return;
@@ -209,14 +209,14 @@ io.on("connection", function (socket) {
     //can't make J exercise if he is asleep
     if (jIsLazy === true && jIsAsleep === true) {
       socket.emit("jIsAsleep", {
-        message: "Server: J is asleep and cannot exercise.",
+        message: "",
         state: "false",
       });
       return;
     }
     if (jIsLazy === false && jIsAsleep === false) {
       socket.emit("state-lazy", {
-        message: "Server: J isn't be lazy.",
+        message: "",
         state: "false",
       });
       return;
@@ -240,7 +240,7 @@ io.on("connection", function (socket) {
     if (jIsAsleep === true) {
       console.log(`J is asleep and can't be put to sleep`);
       socket.emit("state-sleepy", {
-        message: "Server: J is already asleep.",
+        message: "",
         state: "alreadyAsleep",
       });
       return;
@@ -250,7 +250,7 @@ io.on("connection", function (socket) {
       console.log(`Client put J to sleep and returned: ${msg}`);
       //need to tell all clients J has been fed by updating the class on f
       io.sockets.emit("update-all-clients-sleep", {
-        message: "Server: a-client-sleep-j",
+        message: "",
         state: "true",
       });
       jIsSleepy = false;
@@ -260,7 +260,7 @@ io.on("connection", function (socket) {
     } else {
       console.log(`J isn't sleepy.`);
       socket.emit("state-sleepy", {
-        message: "Server: J isn't sleepy.",
+        message: "",
         state: "jIsntSleepy",
       });
       return;
@@ -390,7 +390,7 @@ function toClient_JBored() {
 
   //tell all clients J is lazy
   io.sockets.emit("state-bored", {
-    message: "Server: J is bored.",
+    message: "",
     state: "true",
   });
 
@@ -414,7 +414,7 @@ function toClient_JHungry() {
 
   //tell all clients J is hungry
   io.sockets.emit("state-hungry", {
-    message: "Server: J is hungry.",
+    message: "",
     state: "true",
   });
 
@@ -442,7 +442,7 @@ function toClient_JSleepy() {
   //no one has put J to sleep and the clients should be told until he is.
   if (jIsAsleep === false) {
     io.sockets.emit("state-sleepy", {
-      message: "Server: J is tired.",
+      message: "",
       state: "true",
     });
     //send gifs
@@ -467,7 +467,7 @@ function toClient_JLazy() {
 
   //tell all clients J is lazy
   io.sockets.emit("state-lazy", {
-    message: "Server: J is lazy.",
+    message: "",
     state: "true",
   });
 
