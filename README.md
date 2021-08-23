@@ -4,7 +4,7 @@
 This was an idea I felt would be a good additon to a Discord channel and a stretch project to learn web development and node.js.
 </p>
 <div align="center">
-<img src="https://user-images.githubusercontent.com/8890846/130437198-41409261-0056-40ae-a05d-9d6efcc02dfd.png" alt="virtual friend" width="250" height="300"/>
+<img src="https://github.com/MeganFuhr/BingaGifs/blob/main/JGifs/virtual-j.gif?raw=true" alt="virtual friend" width="350" height="350"/>
 </div>
  
 ---
