@@ -168,7 +168,6 @@
     socket.on('update-all-clients-gifs', function(evt) {
       gifCollection = []
       evt.gifs.forEach(element => {
-        console.log(`From the server, this element is added : ${element}`)
         gifCollection.push(element)
       })     
     })
@@ -181,7 +180,6 @@
       if (evt.state === 'false') {
         document.getElementById('state_hungry').classList.remove('state_visible')
         document.getElementById('state_hungry').classList.add('state_invisible')
-        console.log("J Isn't hungry received from server.....")
         serverMessage(evt) 
       }
       //j is hungry
@@ -230,7 +228,6 @@
       }
       //j is sleepy
       if (evt.state === 'true'){
-        console.log(('client: j is sleepy'))
         document.getElementById('state_sleepy').classList.add('state_visible')
         document.getElementById('state_sleepy').classList.remove('state_invisible')
         serverMessage(evt) 
@@ -274,13 +271,11 @@
     })
     socket.on('update-all-clients-exercise', function(evt) {
       //update classes to show J is tired
-      console.log(evt.message + ' - server told all a client J is no longery lazy')
       document.getElementById('state_lazy').classList.remove('state_visible')
       document.getElementById('state_lazy').classList.add('state_invisible')  
     })
     socket.on('update-all-clients-play', function(evt) {
       //update classes to show J is tired
-      console.log(evt.message + ' - server told all a client J is no longer bored')
       document.getElementById('state_bored').classList.remove('state_visible')
       document.getElementById('state_bored').classList.add('state_invisible')  
     })
@@ -288,7 +283,6 @@
     //receive event from the server that a client put J to sleep
     socket.on('update-all-clients-sleep', function(evt) {
       //update classes to show J is tired
-      console.log(evt.message + ' - server told all a client put J to sleep')
       document.getElementById('state_sleepy').classList.remove('state_visible')
       document.getElementById('state_sleepy').classList.add('state_invisible')
       clientJAsleep = true     
@@ -296,7 +290,6 @@
 
     socket.on('update-client-j-already-asleep', function(evt) {
       //update classes to show J is tired
-      console.log(evt.message)
       document.getElementById('state_tired').classList.remove('state_visible')
       document.getElementById('state_tired').classList.add('state_invisible')
       serverMessage(evt)
@@ -327,7 +320,6 @@
     //https://stackoverflow.com/questions/50788951/loop-through-image-array-with-pure-javascript
     function autoChange() {
       //what is in the array when called
-      console.log(`Inside autochange: ${gifCollection}`)
       // You only need to ensure that the index isn't out of bounds
       if(gifIndex < gifCollection.length){
         img.src = gifCollection[gifIndex];      // If not, use the index
