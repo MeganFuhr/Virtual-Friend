@@ -62,7 +62,7 @@ a {
 .login-box .user-box input:valid ~ label {
   top: -20px;
   left: 0;
-  color: #03e9f4;
+  color: rgb(29 20 66);
   font-size: 12px;
 }
 
