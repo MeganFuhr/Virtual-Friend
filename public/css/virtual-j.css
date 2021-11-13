@@ -1,7 +1,8 @@
 :root {
   --max-width: 600px;
-  background-color: #330b57;
+  background: linear-gradient(rgb(35, 17, 102), #243b55);
 }
+
 .footer {
   max-width: var(--max-width);
   margin-left: auto;
