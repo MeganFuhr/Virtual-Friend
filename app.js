@@ -35,36 +35,36 @@ app.use(morgan("tiny"));
 app.use(express.static(path.join(__dirname, "/public/")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    store: MongoStore.create({
-      collectionName: process.env.MONGO_URI,
-      mongoUrl: process.env.MONGO_URI,
-      collectionName: process.env.SESSION_COLLECTION,
-      dbName: process.env.DBNAME,
-      ttl: 14 * 24 * 60 * 60,
-      autoRemove: "native",
-    }),
-  })
-);
-require("./src/config/passport.js")(app);
+// app.use(cookieParser());
+// app.use(
+//   session({
+//     secret: process.env.SESSION_SECRET,
+//     resave: false,
+//     saveUninitialized: true,
+//     store: MongoStore.create({
+//       collectionName: process.env.MONGO_URI,
+//       mongoUrl: process.env.MONGO_URI,
+//       collectionName: process.env.SESSION_COLLECTION,
+//       dbName: process.env.DBNAME,
+//       ttl: 14 * 24 * 60 * 60,
+//       autoRemove: "native",
+//     }),
+//   })
+// );
+// require("./src/config/passport.js")(app);
 
 app.set("view engine", "ejs");
 app.set("views", "./src/views");
 
-app.use(flash());
+// app.use(flash());
 
-app.use(function (req, res, next) {
-  res.locals.duplicate_email_error = req.flash("duplicate_email_error");
-  res.locals.login_error = req.flash("login_error");
-  next();
-});
+// app.use(function (req, res, next) {
+//   res.locals.duplicate_email_error = req.flash("duplicate_email_error");
+//   res.locals.login_error = req.flash("login_error");
+//   next();
+// });
 
-app.use("/auth", authRouter);
+// app.use("/auth", authRouter);
 app.use("/virtual-j", virtaulJRouter);
 
 //chalk is just an easy way to color text
