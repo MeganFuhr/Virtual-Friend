@@ -1,0 +1,65 @@
+<html lang="en">
+  <body>
+    <head>
+      <link
+        rel="apple-touch-icon"
+        sizes="180x180"
+        href="/apple-touch-icon.png"
+      />
+      <link
+        rel="icon"
+        type="image/png"
+        sizes="32x32"
+        href="/favicon-32x32.png"
+      />
+      <link
+        rel="icon"
+        type="image/png"
+        sizes="16x16"
+        href="/favicon-16x16.png"
+      />
+      <link rel="manifest" href="/site.webmanifest" />
+      <link rel="stylesheet" href="/css/signin.css" />
+    </head>
+    <header>
+      <title>Kung Fu J!</title>
+    </header>
+    <div class="login-box">
+      <h2>Login</h2>
+      <br />
+      <form id="submit" autocomplete="off" action="/auth/signin" method="POST">
+        <div class="user-box">
+          <input type="text" name="email" required="" />
+          <label>Email</label>
+        </div>
+        <div class="user-box">
+          <input type="password" name="password" required="" />
+          <label>Password</label>
+        </div>
+        <a
+          id="submitText"
+          href="#"
+          aria-label="Click to login."
+          onclick="document.getElementById('submit').submit();"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+
+          Submit
+        </a>
+      </form>
+      <div class="user-box">
+        <br />
+        <br />
+        <div class="bottom-text">
+          Not signed up?
+          <a href="/auth/register" aria-label="Follow this link to register."
+            >Register Here</a
+          >
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
